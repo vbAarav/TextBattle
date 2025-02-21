@@ -1,11 +1,22 @@
+import effects
+
 class Rune:
-    def __init__(self, name, description=""):
+    def __init__(self, name, description="", active_effects=[], passive_effects=[], equipped_character=None):
         self.name = name
-        self.description = description  # A brief description of the rune
-    
+        self.description = description
+        self.active_effects = active_effects
+        self.passive_effects = passive_effects
+        self.equipped_character = equipped_character
+
+    def add_active_effect(self, active_effect):
+        self.active_effects.append(active_effect)
+
+    def add_passive_effect(self, passive_effect):
+        self.passive_effects.append(passive_effect)
+
     def __repr__(self):
-        return f"Rune({self.name})"
-    
+        return f"Rune({self.name}, ActiveEffects: {len(self.active_effects)}, PassiveEffects: {len(self.passive_effects)})"
+
 
 class RuneSystem:
     def __init__(self):
@@ -108,3 +119,20 @@ class RuneSystem:
         for runes, result in self.runes_combinations.items():
             runes_names = " + ".join([rune.name for rune in runes])
             print(f"{runes_names} = {result}")
+
+
+# Test Runes
+power_rune = Rune(
+    name="Power Rune",
+    active_effects=[effects.effect_large_slice, effects.effect_enforced_vigor]
+)
+
+crystalised_ice_rune = Rune(
+    name="Crystalised Ice Rune",
+    active_effects=[effects.effect_guard_switch]
+)
+
+glowing_grass_rune = Rune(
+    name="Glowing Grass Rune",
+    active_effects=[effects.effect_heal_all]
+)
