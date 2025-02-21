@@ -42,10 +42,10 @@ class Character:
             if effect in rune.active_effects:
                 effect.apply(self, battle)
     
-    def apply_passive_effects(self, rune):
+    def apply_passive_effects(self, battle):
         for rune in self.runes:
             for effect in rune.passive_effects:
-                effect.apply(self)
+                effect.apply(self, battle)
                 
 # List of Characters
 chr_warrior = Character("Warrior", max_hp=100, attack=10, defense=1, speed=20, runes=[runes.power_rune, runes.crystalised_ice_rune])

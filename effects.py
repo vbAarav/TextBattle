@@ -73,18 +73,11 @@ def damage_ally_and_poison_enemy(character, battle):
 
 
 # Passive Effects
-def undead_heal(character, target):
-    if target.is_undead and target.hp < target.max_hp * 0.5:
-        heal_amount = target.max_hp * 0.1
-        target.heal(heal_amount)
-        print(f"{target.name} heals for {heal_amount} HP due to passive effect.")
+def thousand_divine_cuts(character, battle):
+    print("Effect Running")
 
-def extra_damage_on_no_damage(character, target=None):
-    # Triggered at the end of the character's turn if no damage was dealt to an enemy
-    if target and target.hp == target.max_hp:
-        damage = character.atk * 0.1
-        target.take_damage(damage)
-        print(f"{character.name} deals {damage} extra damage to {target.name} (no damage taken by enemy).")
+def extra_damage_on_no_damage(character, battle):
+    print("Effect Running")
         
         
         
@@ -94,3 +87,4 @@ effect_heal_all = ActiveEffect("Heal All", description="All allies heal health e
 effect_guard_switch = ActiveEffect("Guard Switch", description="Swaps the character's ATK and DEF stats", effect_function=swap_atk_def)
 effect_enforced_vigor = ActiveEffect("Enforced Vigor", description="Deals damage to the target equal to (50%) of ATK. (120%) of ATK if the target is an ally", effect_function=damage_ally_and_poison_enemy)
 
+effect_thousand_divine_cuts = PassiveEffect("Thousand Divine Cuts", description="All enemies have DEF reduced by (5%)", effect_function=thousand_divine_cuts)

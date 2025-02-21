@@ -21,11 +21,14 @@ class Battle:
             
             # Get all characters sorted by speed
             all_characters = sorted([c for c in self.teamA + self.teamB if c.is_alive()], key=lambda c: c.speed, reverse=True)
- 
+
             for character in all_characters:
                 if not character.is_alive():
                     continue
                 
+                # Apply passive effects
+                character.apply_passive_effects(self)
+                    
                 # Get allies and enemies
                 allies = self.teamA if character in self.teamA else self.teamB
                 enemies = self.teamB if character in self.teamA else self.teamA

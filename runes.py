@@ -21,7 +21,8 @@ class Rune:
 # Test Runes
 power_rune = Rune(
     name="Power Rune",
-    active_effects=[effects.effect_large_slice, effects.effect_enforced_vigor]
+    active_effects=[effects.effect_large_slice, effects.effect_enforced_vigor],
+    passive_effects=[effects.effect_thousand_divine_cuts]
 )
 
 crystalised_ice_rune = Rune(
