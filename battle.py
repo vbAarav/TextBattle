@@ -26,14 +26,8 @@ class Battle:
                 if not character.is_alive():
                     continue
                 
-                # Apply passive effects
-                character.apply_passive_effects(self)
-                    
-                # Get allies and enemies
-                allies = self.teamA if character in self.teamA else self.teamB
-                enemies = self.teamB if character in self.teamA else self.teamA
-                
-                self.choose_action(character, allies, enemies)
+                character.apply_passive_effects(self) # Apply passive effects
+                self.choose_action(character) # Choose an action
 
         # End of battle
         if any(c.is_alive() for c in self.teamA):
@@ -42,28 +36,28 @@ class Battle:
             print("Team 2 wins!")
 
     # Choose an Action
-    def choose_action(self, character, allies, enemies):
+    def choose_action(self, character):
         print(f"\n{character.name}'s turn!")
         print("1. Attack")
         print("2. Rune")
         
         choice = input("Choose an action: ").strip()
         if choice == "1":
-            self.attack_action(character, allies, enemies)          
+            self.attack_action(character)          
         
         elif choice == "2":
-            self.use_rune_action(character, allies, enemies)
+            self.use_rune_action(character)
             
         else:
             print("Invalid action!")
             
     # All Action Types 
-    def attack_action(self, character, allies, enemies):
-        target = self.choose_target(allies + enemies)
+    def attack_action(self, character):
+        target = self.choose_target(self.teamA + self.teamB)
         if target:
             character.attack_target(target)
             
-    def use_rune_action(self, character, allies, enemies):
+    def use_rune_action(self, character):
         rune = self.choose_rune(character)
         if rune:
             active_effect = self.choose_active_effect(rune)
