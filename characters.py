@@ -23,8 +23,9 @@ class Character:
         return self.hp > 0
 
     # Attack Methods
-    def receive_attack(self, damage):
-        self.hp = max(0, self.hp - (damage - self.defense))
+    def receive_attack(self, incoming_damage):
+        damage = max(0, incoming_damage - self.defense)
+        self.hp = max(0, self.hp - damage)
         print(f"{self.name} takes {damage} damage! HP: {self.hp}")
 
     def attack_target(self, target):
