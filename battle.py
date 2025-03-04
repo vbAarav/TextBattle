@@ -3,6 +3,7 @@ class Battle:
     def __init__(self, teamA, teamB):
         self.teamA = teamA
         self.teamB = teamB
+        self.turn = 0
         
     # Get Methods
     def get_character_allies(self, character):
@@ -17,17 +18,35 @@ class Battle:
         
     # Start the Battle        
     def start_battle(self):
-        while any(c.is_alive() for c in self.teamA) and any(c.is_alive() for c in self.teamB):
-            
-            # Get all characters sorted by speed
-            all_characters = sorted([c for c in self.teamA + self.teamB if c.is_alive()], key=lambda c: c.speed, reverse=True)
+        # Start of Battle
+        self.turn = 0
+        
+        # Trigger passive effects for start of battle
+        for team in [self.teamA, self.teamB]:
+            for character in team:
+                for rune in character.runes:
+                    for effect in rune.passive_effects:
+                        effect.check_and_apply(character, self, trigger="start_of_battle")
+                        
 
+        while any(c.is_alive() for c in self.teamA) and any(c.is_alive() for c in self.teamB):
+            self.turn += 1
+
+            # Trigger passive effects for start of turn
+            for team in [self.teamA, self.teamB]:
+                for character in team:
+                    for rune in character.runes:
+                        for effect in rune.passive_effects:
+                            effect.check_and_apply(character, self, trigger="on_turn", turn=self.turn)
+            
+            # Calculate Turn Order
+            all_characters = sorted([c for c in self.teamA + self.teamB if c.is_alive()], key=lambda c: c.speed, reverse=True)
+            
+            # Character Turns
             for character in all_characters:
                 if not character.is_alive():
                     continue
-                
-                character.apply_passive_effects(self) # Apply passive effects
-                self.choose_action(character) # Choose an action
+                self.choose_action(character)  # Choose action
 
         # End of battle
         if any(c.is_alive() for c in self.teamA):
@@ -55,7 +74,7 @@ class Battle:
     def attack_action(self, character):
         target = self.choose_target(self.teamA + self.teamB)
         if target:
-            character.attack_target(target)
+            character.attack_target(target, self)
             
     def use_rune_action(self, character):
         rune = self.choose_rune(character)
