@@ -88,7 +88,7 @@ def large_slice(character, battle):
     target = battle.choose_target(battle.teamA + battle.teamB)
     if target:
         print(f"{character.name} attacks {target.name}!")
-        damage = int(character.attack * 1.5)
+        damage = max(character.attack + 1, int(character.attack * 1.5))
         target.receive_attack(damage, character, battle)
 
 
@@ -108,7 +108,7 @@ def damage_ally_and_poison_enemy(character, battle):
     if (target in battle.get_character_allies(character)) and (target != character):
         # Deal Damage
         print(f"{character.name} attacks {target.name}!")
-        damage = int(character.attack * 1.2)
+        damage = max(character.attack + 1, int(character.attack * 1.2))
         target.receive_attack(damage, character, battle)
 
         # Poison
@@ -124,12 +124,12 @@ def damage_ally_and_poison_enemy(character, battle):
 def thousand_divine_cuts(character, battle):
     for enemy in battle.get_character_enemies(character):
         old_defense = enemy.defense
-        enemy.defense = int(enemy.defense * 0.95)
+        enemy.defense = min(enemy.defense - 1, int(enemy.defense * 0.95))
         print(f"{enemy.name} DEF reduced by 5% ({old_defense}) -> ({enemy.defense})")
 
 
 def early_stance(character, battle):
-    character.defense = int(character.defense * 1.2)
+    character.defense = max(character.defense + 1, int(character.defense * 1.2))
     print(f"{character.name} enters an early stance. DEF increased by 20%.")
 
 
@@ -139,7 +139,7 @@ def engine(character, battle):
 
 
 def double_up(character, battle):
-    character.attack = int(character.attack * 1.01)
+    character.attack = max(character.attack + 1, int(character.attack * 1.01))
     print(f"{character.name} ATK increased by 1%.")
 
 
@@ -149,13 +149,13 @@ def late_bloomer(character, battle):
 
 
 def last_stance(character, battle):
-    character.attack = int(character.attack * 1.5)
+    character.attack = max(character.attack + 1, int(character.attack * 1.5))
     print(f"{character.name} ATK increased by 50%.")
 
 
 def wolf_hunger(character, battle):
     for ally in battle.get_character_allies(character):
-        ally.attack = int(ally.attack * 1.5)
+        ally.attack = max(ally.attack + 1, int(ally.attack * 1.5))
         print(f"{ally.name} ATK increased by 50%.")
 
 
