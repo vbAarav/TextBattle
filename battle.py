@@ -4,30 +4,30 @@ class Battle:
         self.teamA = teamA
         self.teamB = teamB
         self.turn = 0
-        
+
     # Get Methods
     def get_character_allies(self, character):
         if character in self.teamA:
             return self.teamA
         return self.teamB
-    
+
     def get_character_enemies(self, character):
         if character in self.teamA:
             return self.teamB
         return self.teamA
-        
-    # Start the Battle        
+
+    # Start the Battle
     def start_battle(self):
         # Start of Battle
         self.turn = 0
-        
+
         # Trigger passive effects for start of battle
         for team in [self.teamA, self.teamB]:
             for character in team:
                 for rune in character.runes:
                     for effect in rune.passive_effects:
-                        effect.check_and_apply(character, self, trigger="start_of_battle")
-                        
+                        effect.check_and_apply(
+                            character, self, trigger="start_of_battle")
 
         while any(c.is_alive() for c in self.teamA) and any(c.is_alive() for c in self.teamB):
             self.turn += 1
@@ -37,11 +37,13 @@ class Battle:
                 for character in team:
                     for rune in character.runes:
                         for effect in rune.passive_effects:
-                            effect.check_and_apply(character, self, trigger="on_turn", turn=self.turn)
-            
+                            effect.check_and_apply(
+                                character, self, trigger="on_turn", turn=self.turn)
+
             # Calculate Turn Order
-            all_characters = sorted([c for c in self.teamA + self.teamB if c.is_alive()], key=lambda c: c.speed, reverse=True)
-            
+            all_characters = sorted(
+                [c for c in self.teamA + self.teamB if c.is_alive()], key=lambda c: c.speed, reverse=True)
+
             # Character Turns
             for character in all_characters:
                 if not character.is_alive():
@@ -59,38 +61,37 @@ class Battle:
         print(f"\n{character.name}'s turn!")
         print("1. Attack")
         print("2. Rune")
-        
+
         choice = input("Choose an action: ").strip()
         if choice == "1":
-            self.attack_action(character)          
-        
+            self.attack_action(character)
+
         elif choice == "2":
             self.use_rune_action(character)
-            
+
         else:
             print("Invalid action!")
-            
-    # All Action Types 
+
+    # All Action Types
     def attack_action(self, character):
         target = self.choose_target(self.teamA + self.teamB)
         if target:
             character.attack_target(target, self)
-            
+
     def use_rune_action(self, character):
         rune = self.choose_rune(character)
         if rune:
             active_effect = self.choose_active_effect(rune)
             if active_effect:
                 character.activate_active_effect(rune, active_effect, self)
-        
-        
+
     # Choose a Selection
-    def choose_target(self, targets, condition=True):       
+    def choose_target(self, targets, condition=True):
         print("\nChoose a target:")
         targets = [t for t in targets if condition]
         for i, target in enumerate(targets):
-            print(f"{i+1}. {target.name} (HP: {target.hp})")
-        
+            print(f"{i+1}. {target.name} (HP: {target.hp}/{target.max_hp}) (ATK: {target.attack}) (DEF: {target.defense}) (SPD: {target.speed})")
+
         choice = input("Enter target number: ").strip()
         if choice.isdigit():
             index = int(choice) - 1
@@ -98,12 +99,12 @@ class Battle:
                 return targets[index]
         print("Invalid choice!")
         return None
-    
+
     def choose_rune(self, character):
         print("\nChoose a rune:")
         for i, rune in enumerate(character.runes):
             print(f"{i+1}. {rune.name}: {rune.description}")
-        
+
         choice = input("Enter rune number: ").strip()
         if choice.isdigit():
             index = int(choice) - 1
@@ -111,12 +112,12 @@ class Battle:
                 return character.runes[index]
         print("Invalid choice!")
         return None
-    
+
     def choose_active_effect(self, rune):
         print("\nChoose an active effect:")
         for i, effect in enumerate(rune.active_effects):
             print(f"{i+1}. {effect.name}: {effect.description}")
-        
+
         choice = input("Enter effect number: ").strip()
         if choice.isdigit():
             index = int(choice) - 1
@@ -124,5 +125,3 @@ class Battle:
                 return rune.active_effects[index]
         print("Invalid choice!")
         return None
-        
-        
