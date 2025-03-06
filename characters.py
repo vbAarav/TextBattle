@@ -1,6 +1,6 @@
 import runes
 class Character:
-    def __init__(self, name, max_hp, attack, defense, speed, runes=[]):
+    def __init__(self, name, max_hp, attack, defense, speed, runes=[], status_effects=[]):
         # Stats
         self.name = name
         self.max_hp = max_hp
@@ -13,6 +13,9 @@ class Character:
         self.runes = runes
         for rune in self.runes:
             rune.equipped_character = self
+            
+        # Status Effects
+        self.status_effects = status_effects
         
     def equip_rune(self, rune):
         self.runes.append(rune)
@@ -28,18 +31,8 @@ class Character:
         self.take_damage(damage, battle, source=attacker)
         print(f"{self.name} takes {damage} damage! HP: {self.hp}")
 
-        # Trigger passive effects when receiving an attack
-        for rune in self.runes:
-            for effect in rune.passive_effects:
-                effect.check_and_apply(self, battle, trigger="on_receive_attack", attacker=attacker)
-
-        # Check if character dies
-        if self.hp == 0:
-            trigger_type = "on_death_by_ally" if attacker in battle.get_character_allies(self) else "on_death_by_enemy"
-            for rune in self.runes:
-                for effect in rune.passive_effects:
-                    effect.check_and_apply(self, battle, trigger=trigger_type, killer=attacker)
-
+        # Trigger passive effects after receiving an attack
+        battle.trigger_effects(self, trigger="on_receive_attack", attacker=attacker)
         
 
     def attack_target(self, target, battle):
@@ -47,9 +40,7 @@ class Character:
         target.receive_attack(self.attack, self, battle)
 
         # Trigger passive effects when performing an attack
-        for rune in self.runes:
-            for effect in rune.passive_effects:
-                effect.check_and_apply(self, battle, trigger="on_attack", target=target)
+        battle.trigger_effects(self, trigger="on_attack", target=target)
 
         
     # Heal Methods
@@ -73,9 +64,7 @@ class Character:
     def on_death(self, battle, source=None):
         # Trigger passive effects when dying by an ally or enemy
         trigger_type = "on_death_by_ally" if source in battle.get_character_allies(self) else "on_death_by_enemy"
-        for rune in self.runes:
-            for effect in rune.passive_effects:
-                effect.check_and_apply(self, battle, trigger=trigger_type, killer=source)
+        battle.trigger_effects(self, trigger=trigger_type, killer=source)
                 
 # List of Characters
 chr_warrior = Character("Warrior", max_hp=100, attack=10, defense=1, speed=20, runes=[runes.power_rune, runes.crystalised_ice_rune])

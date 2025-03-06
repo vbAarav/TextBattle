@@ -45,6 +45,19 @@ class PassiveEffect(Effect):
     def __repr__(self):
         return f"PassiveEffect({self.name})"
 
+class StatusEffect(Effect):
+    def __init__(self, name, description="", duration=1):
+        super().__init__(name, description)
+        self.duration = duration
+
+    def apply(self, character, battle):
+        # General method to apply an effect
+        raise NotImplementedError(
+            "Subclasses must implement the 'apply' method.")
+
+    def __repr__(self):
+        return f"StatusEffect({self.name})"
+
 
 # Trigger Conditions
 def trigger_on_start_of_battle(character, battle, **kwargs):
