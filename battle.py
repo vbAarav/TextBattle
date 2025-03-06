@@ -26,6 +26,17 @@ class Battle:
         for rune in character.runes:
             for effect in rune.passive_effects:
                 effect.check_and_apply(character, self, trigger=trigger, **kwargs)
+    
+    def display_battle_status(self):
+        print("\n-----------------------------------------")
+        print(f"Turn: {self.turn}")
+        print("Team 1:")
+        for character in self.teamA:
+            print(f"{character.name} (HP: {character.hp}/{character.max_hp}) (ATK: {character.attack}) (DEF: {character.defense}) (SPD: {character.speed})")
+        print("Team 2:")
+        for character in self.teamB:
+            print(f"{character.name} (HP: {character.hp}/{character.max_hp}) (ATK: {character.attack}) (DEF: {character.defense}) (SPD: {character.speed})")
+        print("\n-----------------------------------------")
 
     # Start the Battle
     def start_battle(self):
@@ -54,6 +65,8 @@ class Battle:
             for character in all_characters:
                 if not character.is_alive():
                     continue
+                
+                self.display_battle_status()
                 self.choose_action(character)  # Choose action
 
         # End of battle
