@@ -1,4 +1,6 @@
-# Base Effect Class
+import time
+
+# Effect Classes
 class Effect:
     def __init__(self, name, description=""):
         self.name = name
@@ -46,17 +48,52 @@ class PassiveEffect(Effect):
         return f"PassiveEffect({self.name})"
 
 class StatusEffect(Effect):
-    def __init__(self, name, description="", duration=1):
+    def __init__(self, name, description="", duration=1, apply_effect=None, ongoing_effect=None, trigger_condition=None):
         super().__init__(name, description)
         self.duration = duration
+        
+    def check_and_apply(self, character, battle, **kwargs):
+        """Checks if the condition is met and applies the effect if so."""
+        if self.trigger_condition and self.trigger_condition(character, battle, **kwargs):
+            self.apply(character, battle)
 
     def apply(self, character, battle):
-        # General method to apply an effect
-        raise NotImplementedError(
-            "Subclasses must implement the 'apply' method.")
+        if self.effect_function:
+            self.effect_function(character, battle)
+        
+    def update_effect(self, character, battle):
+        if self.ongoing_effect:
+            self.ongoing_effect(character, battle)
+        self.decrement_duration()
+        
+    def decrement_duration(self):
+        self.duration -= 1
+        if self.duration <= 0:  
+            self.remove()
+        
 
     def __repr__(self):
         return f"StatusEffect({self.name})"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Trigger Conditions
@@ -96,6 +133,11 @@ def trigger_if_ally_present(name):
     return lambda character, battle, **kwargs: any(ally.name == name for ally in battle.get_character_allies(character))
 
 
+
+
+
+
+
 # Active Effects
 def large_slice(character, battle):
     target = battle.choose_target(battle.teamA + battle.teamB)
@@ -131,6 +173,11 @@ def damage_ally_and_poison_enemy(character, battle):
         print(f"{character.name} attacks {target.name}!")
         damage = int(character.attack * 0.5)
         target.receive_attack(damage, character, battle)
+
+
+
+
+
 
 
 # Passive Effects
@@ -170,6 +217,12 @@ def wolf_hunger(character, battle):
     for ally in battle.get_character_allies(character):
         ally.attack = max(ally.attack + 1, int(ally.attack * 1.5))
         print(f"{ally.name} ATK increased by 50%.")
+
+
+
+
+
+
 
 
 # Create A Large Set of Effects
