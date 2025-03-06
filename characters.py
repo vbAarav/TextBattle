@@ -21,7 +21,7 @@ class Character:
         self.runes.append(rune)
         rune.equipped_character = self
         
-    # Is the Character Alive
+    # Character State Methods
     def is_alive(self):
         return self.hp > 0
 
