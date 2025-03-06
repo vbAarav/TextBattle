@@ -19,6 +19,9 @@ class Character:
         # Status Effects
         self.status_effects = status_effects
         
+    def __repr__(self):
+        return f"Character({self.name}, HP: {self.hp}/{self.max_hp}, ATK: {self.attack}, DEF: {self.defense}, SPD: {self.speed}), Statuses: {self.status_effects}"
+        
     def equip_rune(self, rune):
         self.runes.append(rune)
         rune.equipped_character = self
@@ -27,15 +30,15 @@ class Character:
     def is_alive(self):
         return self.hp > 0
 
-    # Attack Methods
+    # Character Property Manipulation Methods
     def receive_attack(self, incoming_damage, attacker, battle):
         damage = max(0, incoming_damage - self.defense)
         self.take_damage(damage, battle, source=attacker)
-        print(f"{self.name} takes {damage} damage! HP: {self.hp}")
         time.sleep(1)
 
         # Trigger passive effects after receiving an attack
         battle.trigger_effects(self, trigger="on_receive_attack", attacker=attacker)
+        time.sleep(1)
         
 
     def attack_target(self, target, battle):
@@ -45,12 +48,17 @@ class Character:
         
         # Trigger passive effects when performing an attack
         battle.trigger_effects(self, trigger="on_attack", target=target)
+        time.sleep(1)
 
-        
-    # Heal Methods
+    
     def receive_heal(self, heal_amount):
         self.hp = min(self.hp + heal_amount, self.max_hp)
         print(f"{self.name} heals for {heal_amount} HP. HP: {self.hp}")
+        time.sleep(1)
+        
+    def add_status_effect(self, status_effect):
+        self.status_effects.append(status_effect)
+        print(f"{self.name} is now affected by {status_effect.name}.")
         time.sleep(1)
         
     # Rune Methods
@@ -61,7 +69,9 @@ class Character:
                 
     # Stat Changes
     def take_damage(self, damage, battle, source=None):
+        old_hp = self.hp
         self.hp = max(0, self.hp - damage)
+        print(f"{self.name} takes {damage} damage! HP: {old_hp} --> {self.hp}")
         
         if self.hp == 0:
             self.on_death(battle, source=source)

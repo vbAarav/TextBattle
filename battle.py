@@ -22,12 +22,12 @@ class Battle:
     def trigger_effects(self, character, trigger, **kwargs):
         # Status Effects
         for effect in character.status_effects:
-            effect.check_and_apply(character, self, trigger=trigger, **kwargs)
+            effect.update_effect(character, self, **kwargs, trigger=trigger)
         
         # Rune Effects
         for rune in character.runes:
             for effect in rune.passive_effects:
-                effect.check_and_apply(character, self, trigger=trigger, **kwargs)
+                effect.check_and_apply(character, self, **kwargs, trigger=trigger)
     
     def display_battle_status(self):
         print("\n-----------------------------------------")
@@ -49,16 +49,10 @@ class Battle:
         # Trigger Start of Battle Effects
         for team in [self.teamA, self.teamB]:
             for character in team:
-                self.trigger_effects(character, trigger="start_of_battle")              
+                self.trigger_effects(character, trigger="on_start_of_battle")              
 
         # Battle Loop
-        while any(c.is_alive() for c in self.teamA) and any(c.is_alive() for c in self.teamB):
-            self.turn += 1
-
-            # Trigger Start of Turn Effects
-            for team in [self.teamA, self.teamB]:
-                for character in team:
-                    self.trigger_effects(character, trigger="start_of_turn", turn=self.turn)
+        while any(c.is_alive() for c in self.teamA) and any(c.is_alive() for c in self.teamB):   
 
             # Calculate Turn Order
             all_characters = sorted([c for c in self.teamA + self.teamB if c.is_alive()], key=lambda c: c.speed, reverse=True)
@@ -68,9 +62,17 @@ class Battle:
                 if not character.is_alive():
                     continue
                 
+                # Start of Turn
+                self.turn += 1
+                
+                # Trigger Start of Turn Effects
+                for team in [self.teamA, self.teamB]:
+                    for chr in team:
+                        self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)
+                
                 time.sleep(1)
                 self.display_battle_status() # Display Battle Status
-                self.choose_action(character)  # Choose action
+                self.choose_action(character)  # Choose Action
 
         # End of battle
         if any(c.is_alive() for c in self.teamA):
