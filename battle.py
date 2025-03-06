@@ -15,6 +15,17 @@ class Battle:
         if character in self.teamA:
             return self.teamB
         return self.teamA
+    
+    # Battle Methods
+    def trigger_effects(self, character, trigger, **kwargs):
+        # Status Effects
+        for effect in character.status_effects:
+            effect.check_and_apply(character, self, trigger=trigger, **kwargs)
+        
+        # Rune Effects
+        for rune in character.runes:
+            for effect in rune.passive_effects:
+                effect.check_and_apply(character, self, trigger=trigger, **kwargs)
 
     # Start the Battle
     def start_battle(self):
@@ -24,10 +35,8 @@ class Battle:
         # Trigger passive effects for start of battle
         for team in [self.teamA, self.teamB]:
             for character in team:
-                for rune in character.runes:
-                    for effect in rune.passive_effects:
-                        effect.check_and_apply(
-                            character, self, trigger="start_of_battle")
+                self.trigger_effects(character, trigger="start_of_battle")              
+   
 
         while any(c.is_alive() for c in self.teamA) and any(c.is_alive() for c in self.teamB):
             self.turn += 1
@@ -35,10 +44,7 @@ class Battle:
             # Trigger passive effects for start of turn
             for team in [self.teamA, self.teamB]:
                 for character in team:
-                    for rune in character.runes:
-                        for effect in rune.passive_effects:
-                            effect.check_and_apply(
-                                character, self, trigger="on_turn", turn=self.turn)
+                    self.trigger_effects(character, trigger="start_of_turn", turn=self.turn)
 
             # Calculate Turn Order
             all_characters = sorted(
