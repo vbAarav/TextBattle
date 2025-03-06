@@ -169,17 +169,23 @@ effect_guard_switch = ActiveEffect(
 effect_enforced_vigor = ActiveEffect(
     "Enforced Vigor", description="Deals damage to the target equal to ATK x 50%. ATK x 120%, if the target is an ally", effect_function=damage_ally_and_poison_enemy)
 
-effect_thousand_divine_cuts = PassiveEffect("Thousand Divine Cuts", description="At the start of battle, All enemies have DEF reduced by (5%)",
-                                            effect_function=thousand_divine_cuts, trigger_condition=trigger_on_start_of_battle)
+effect_thousand_divine_cuts = PassiveEffect("Thousand Divine Cuts", description="At the start of battle, All enemies have DEF reduced by (5%)", 
+                            effect_function=thousand_divine_cuts, trigger_condition=trigger_on_start_of_battle)
+
 effect_engine = PassiveEffect("Engine", description="After receiving an attack, SPD + 1",
                               effect_function=engine, trigger_condition=trigger_on_receive_attack)
+
 effect_double_up = PassiveEffect("Double Up", description="After executing an attack, Increase ATK by 1%",
                                  effect_function=double_up, trigger_condition=trigger_on_attack)
+
 effect_late_bloomer = PassiveEffect("Late Bloomer", description="On Turn 2, Fully recover HP",
                                     effect_function=late_bloomer, trigger_condition=trigger_on_turn_x(2))
+
 effect_early_stance = PassiveEffect("Early Stance", description="For 5 turns, Increase DEF by 20%",
                                     effect_function=early_stance, trigger_condition=trigger_within_first_x_turns(5))
+
 effect_last_stance = PassiveEffect("Last Stance", description="When HP is below 50%. Increase ATK by 50%", effect_function=last_stance,
                                    trigger_condition=trigger_on_stat_threshold("hp", lambda hp, character: hp < character.max_hp / 2))
+
 effect_wolf_hunger = PassiveEffect("Wolf Hunger", description="When killed by an enemy. Increase allies ATK by 50%",
                                    effect_function=wolf_hunger, trigger_condition=trigger_on_death_by_enemy)

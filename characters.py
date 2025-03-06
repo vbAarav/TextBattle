@@ -62,11 +62,6 @@ class Character:
         if rune in self.runes:
             if effect in rune.active_effects:
                 effect.apply(self, battle)
-    
-    def apply_passive_effects(self, battle):
-        for rune in self.runes:
-            for effect in rune.passive_effects:
-                effect.apply(self, battle)
                 
     # Stat Changes
     def take_damage(self, damage, battle, source=None):
