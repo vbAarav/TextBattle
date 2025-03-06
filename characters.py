@@ -1,4 +1,6 @@
 import runes
+import time
+
 class Character:
     def __init__(self, name, max_hp, attack, defense, speed, runes=[], status_effects=[]):
         # Stats
@@ -30,6 +32,7 @@ class Character:
         damage = max(0, incoming_damage - self.defense)
         self.take_damage(damage, battle, source=attacker)
         print(f"{self.name} takes {damage} damage! HP: {self.hp}")
+        time.sleep(1)
 
         # Trigger passive effects after receiving an attack
         battle.trigger_effects(self, trigger="on_receive_attack", attacker=attacker)
@@ -37,8 +40,9 @@ class Character:
 
     def attack_target(self, target, battle):
         print(f"{self.name} attacks {target.name}!")
+        time.sleep(1)
         target.receive_attack(self.attack, self, battle)
-
+        
         # Trigger passive effects when performing an attack
         battle.trigger_effects(self, trigger="on_attack", target=target)
 
@@ -47,6 +51,7 @@ class Character:
     def receive_heal(self, heal_amount):
         self.hp = min(self.hp + heal_amount, self.max_hp)
         print(f"{self.name} heals for {heal_amount} HP. HP: {self.hp}")
+        time.sleep(1)
         
     # Rune Methods
     def activate_active_effect(self, rune, effect, battle):
