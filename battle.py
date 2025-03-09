@@ -84,12 +84,18 @@ class Battle:
                 time.sleep(1)
                 self.display_battle_status() # Display Battle Status
                 self.choose_action(character)  # Choose Action
+                
+        self.end_battle()
 
+        
+            
+    def end_battle(self):   
         # End of battle
         if any(c.is_alive() for c in self.playerOne.characters):
-            print("Team 1 wins!")
+            print(f"{self.playerOne} wins!")
         else:
-            print("Team 2 wins!")
+            print(f"{self.playerTwo} wins!")
+        
 
     # Choose an Action
     def choose_action(self, character):

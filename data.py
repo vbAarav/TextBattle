@@ -4,6 +4,8 @@ from effects import ActiveEffect, PassiveEffect, StatusEffect
 import effects
 import random
 import time
+import map
+
 
 # Active Effects
 def large_slice(character, battle):
@@ -155,13 +157,25 @@ glowing_grass_rune = Rune(
 
 
 # Characters
+chr_slime = Character(
+    name="Slime",
+    max_hp=20,
+    attack=1,
+    defense=1,
+    speed=1,
+    description=
+    """
+        A sentient collection of magical liquid. 
+    """
+)
+
 chr_azelgram = Character(
     name="Azelgram",
     max_hp=100,
     attack=10,
     defense=10,
     speed=10,
-    runes=[]
+    runes=[],
     description=
     """
         Azelgram, The Devourer of Spirits, The Demon of Belief, The Fireborn Horror.
@@ -174,3 +188,8 @@ chr_azelgram = Character(
         After enough souls, he grew wings made of an eldritch horror.      
     """
 )
+
+
+# Areas
+area_long_plains = map.Area("Long Plains")
+area_long_plains.add_enemy(chr_slime, 8)
