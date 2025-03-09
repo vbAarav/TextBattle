@@ -2,7 +2,7 @@ import runes
 import time
 
 class Character:
-    def __init__(self, name, max_hp, attack, defense, speed, runes=None, status_effects=None):
+    def __init__(self, name, max_hp, attack, defense, speed, runes=None, status_effects=None, description=""):
         # Stats
         self.name = name
         self.max_hp = max_hp
@@ -10,6 +10,9 @@ class Character:
         self.attack = attack
         self.speed = speed
         self.defense = defense
+        
+        # Description
+        self.description = description
 
         # Runes
         self.runes = runes if runes is not None else []
@@ -86,11 +89,7 @@ class Character:
         trigger_type = "on_death_by_ally" if source in battle.get_character_allies(self) else "on_death_by_enemy"
         battle.trigger_effects(self, trigger=trigger_type, killer=source)
                 
-# List of Characters
-chr_warrior = Character("Warrior", max_hp=100, attack=10, defense=1, speed=20, runes=[runes.power_rune, runes.crystalised_ice_rune])
-chr_undead_soldier = Character("Undead Soldier", max_hp=150, attack=4, defense=7, speed=5, runes=[runes.glowing_grass_rune])
-chr_orc = Character("Orc", max_hp=100, attack=9, defense=4, speed=6)
-chr_goblin = Character("Goblin", max_hp=100, attack=6, defense=4, speed=5)
+
     
     
 
