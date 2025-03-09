@@ -116,8 +116,8 @@ def trigger_on_death_by_enemy(character, battle, **kwargs):
     return kwargs.get("trigger") == "on_death_by_enemy"
 
 
-def trigger_on_stat_threshold(stat, condition):
-    return lambda character, battle, **kwargs: condition(getattr(character, stat), character)
+def trigger_on_stat_threshold(condition):
+    return lambda character, battle, **kwargs: condition(character)
 
 
 def trigger_if_ally_present(name):

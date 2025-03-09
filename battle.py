@@ -67,7 +67,7 @@ class Battle:
         while any(c.is_alive() for c in self.playerOne.characters) and any(c.is_alive() for c in self.playerTwo.characters):   
 
             # Calculate Turn Order
-            all_characters = sorted([c for c in self.get_all_characters() if c.is_alive()], key=lambda c: c.speed, reverse=True)
+            all_characters = sorted([c for c in self.get_all_characters() if c.is_alive()], key=lambda c: c.speed.total, reverse=True)
 
             # Character Turns
             for character in all_characters:

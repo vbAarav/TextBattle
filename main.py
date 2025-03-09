@@ -108,7 +108,7 @@ player = players.Player(name, location=data.area_long_plains)
 
 # Choose a character
 name = input("What is your character's name: ")
-character = characters.Character(name, max_hp=100, attack=4, defense=2, speed=1)
+character = characters.Character(name, max_hp=100, attack=4, defense=2, speed=1, runes=[data.power_rune])
 player.characters.append(character)
 print(f"{character.name} has entered the world!\n")
 time.sleep(1)
