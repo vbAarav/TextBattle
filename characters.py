@@ -8,11 +8,10 @@ class Character:
         self.description = description
         
         # Stats
-        self.max_hp = max_hp
-        self.hp = self.max_hp
-        self.attack = attack
-        self.speed = speed
-        self.defense = defense      
+        self.max_hp = ResourceStat(max_hp, name="MAXHP")
+        self.attack = Stat(attack, name="ATK")
+        self.speed = Stat(speed, name="SPD")
+        self.defense = Stat(defense, name="DEF")      
 
         # Belongings
         self.items = []
@@ -25,7 +24,19 @@ class Character:
 
         
     def __repr__(self):
-        toReturn = f"{self.name} (HP: {self.hp}/{self.max_hp}, ATK: {self.attack}, DEF: {self.defense}, SPD: {self.speed})"
+        toReturn = f"{self.name} (HP: {self.max_hp.resource_value}/{self.max_hp.total}, ATK: {self.attack.total}, DEF: {self.defense.total}, SPD: {self.speed.total})"
+        
+        # Additive
+        for stat in [self.max_hp, self.attack, self.defense, self.speed]:
+            if stat.additive_modifiers:
+                toReturn += f" {stat.name} {'+' if sum(stat.additive_modifiers) >= 0 else '-'}{sum(stat.additive_modifiers)}"
+   
+        # Multiply
+        for stat in [self.max_hp, self.attack, self.defense, self.speed]:
+            for modifier in stat.multiplicative_modifiers:
+                toReturn += f" {stat.name} {'+' if (modifier - 1) >= 0 else ''}{(modifier - 1) * 100:.0f}%"      
+                              
+        # Statuses
         if len(self.status_effects) > 0:
             toReturn += f" Statuses: {self.status_effects}"
         return toReturn
@@ -36,11 +47,11 @@ class Character:
         
     # Character State Methods
     def is_alive(self):
-        return self.hp > 0
+        return self.max_hp.resource_value > 0
 
     # Character Property Manipulation Methods
     def receive_attack(self, incoming_damage, attacker, battle):
-        damage = max(0, incoming_damage - self.defense)
+        damage = max(0, incoming_damage - self.defense.total)
         self.take_damage(damage, battle, source=attacker)
         time.sleep(1)
 
@@ -52,16 +63,15 @@ class Character:
     def attack_target(self, target, battle):
         print(f"{self.name} attacks {target.name}!")
         time.sleep(1)
-        target.receive_attack(self.attack, self, battle)
+        target.receive_attack(self.attack.total, self, battle)
         
         # Trigger passive effects when performing an attack
         battle.trigger_effects(self, trigger="on_attack", target=target)
         time.sleep(1)
-
     
     def receive_heal(self, heal_amount):
-        self.hp = min(self.hp + heal_amount, self.max_hp)
-        print(f"{self.name} heals for {heal_amount} HP. HP: {self.hp}")
+        self.max_hp.change_resource_by_val(heal_amount)
+        print(f"{self.name} heals for {heal_amount} HP. HP: {self.max_hp.resource_value}")
         time.sleep(1)
         
     def add_status_effect(self, status_effect):
@@ -78,17 +88,71 @@ class Character:
                 
     # Stat Changes
     def take_damage(self, damage, battle, source=None):
-        old_hp = self.hp
-        self.hp = max(0, self.hp - damage)
-        print(f"{self.name} takes {damage} damage! HP: {old_hp} --> {self.hp}")
+        old_hp = self.max_hp.resource_value
+        self.max_hp.change_resource_by_val(-damage) 
+        print(f"{self.name} takes {damage} damage! HP: {old_hp} --> {self.max_hp.resource_value}")
         
-        if self.hp == 0:
+        if self.max_hp.resource_value <= 0:
             self.on_death(battle, source=source)
                 
     def on_death(self, battle, source=None):
         # Trigger passive effects when dying by an ally or enemy
         trigger_type = "on_death_by_ally" if source in battle.get_character_allies(self) else "on_death_by_enemy"
         battle.trigger_effects(self, trigger=trigger_type, killer=source)
+   
+
+# Stats    
+class Stat:
+    def __init__(self, base_value, name=None):
+        self.name = None if name is None else name
+        self.base_value = base_value
+        self.additive_modifiers = []  # Flat increases/decreases
+        self.multiplicative_modifiers = []  # Percentage-based increases
+
+    def add_modifier(self, value: float, is_multiplicative: bool = False):
+        """Adds a modifier. Set is_multiplicative=True for percentage-based modifiers."""
+        if is_multiplicative:
+            self.multiplicative_modifiers.append(value)
+        else:
+            self.additive_modifiers.append(value)
+
+    def remove_modifier(self, value: float):
+        """Removes a modifier if it exists."""
+        if value in self.additive_modifiers:
+            self.additive_modifiers.remove(value)
+        elif value in self.multiplicative_modifiers:
+            self.multiplicative_modifiers.remove(value)
+
+    @property
+    def total(self):
+        """Calculates the total stat value with all modifiers applied."""
+        total_value = self.base_value + sum(self.additive_modifiers)
+        for multiplier in self.multiplicative_modifiers:
+            total_value = total_value * multiplier
+        return max(0, int(total_value))  # Ensure non-negative stats                                                    
+
+    def __repr__(self):
+        return f"Stat(base={self.base_value}, total={self.total})"
+    
+    
+# Resource Stat
+class ResourceStat(Stat):
+    def __init__(self, max_value, name=None):
+        super().__init__(max_value, name)
+        self.resource_value = self.total
+        
+    def change_resource_by_val(self, val):
+        self.resource_value = min(self.total, max(self.resource_value + val, 0))
+    
+    def change_resource_by_perc(self, val):
+        self.resource_value = max(0, max(self.total, int((self.get_percentage() + val) * self.total)))
+        
+    def get_percentage(self):
+        return (self.resource_value/self.total)
+        
+    def __repr__(self):
+        return f"Stat(base={self.resource_value}/{self.base_value}, total={self.resource_value}/{self.total})"
+
                 
 
     

@@ -13,7 +13,7 @@ def large_slice(character, battle):
     if target:
         print(f"{character.name} attacks {target.name}!")
         multiplier = random.uniform(1.0, 1.5)
-        damage = max(character.attack + 1, int(character.attack * multiplier))
+        damage = max(character.attack.total + 1, int(character.attack.total * multiplier))
         target.receive_attack(damage, character, battle)
         time.sleep(1)
         
@@ -21,7 +21,7 @@ effect_large_slice = ActiveEffect("Large Slice", description="Attacks the target
 
 def heal_all_allies(character, battle):
     for ally in battle.get_character_allies(character):
-        heal_amount = max(1, ally.max_hp * 0.05)
+        heal_amount = max(1, ally.max_hp.total * 0.05)
         ally.receive_heal(heal_amount)
         time.sleep(1)
 
@@ -29,6 +29,7 @@ effect_heal_all = ActiveEffect("Heal All", description="All allies heal health e
 
 def swap_atk_def(character, battle):
     character.attack, character.defense = character.defense, character.attack
+    character.attack.name, character.defense.name = character.defense.name, character.attack.name
     print(f"{character.name} swapped ATK and DEF stats.")
     time.sleep(1)
 
@@ -39,7 +40,7 @@ def damage_ally_and_poison_enemy(character, battle):
     if (target in battle.get_character_allies(character)) and (target != character):
         # Deal Damage
         print(f"{character.name} attacks {target.name}!")
-        damage = max(character.attack + 1, int(character.attack * 1.8))
+        damage = max(character.attack.total + 1, int(character.attack.total * 1.8))
         target.receive_attack(damage, character, battle)
 
         # Poison
@@ -49,7 +50,7 @@ def damage_ally_and_poison_enemy(character, battle):
     else:
         # Deal Damage
         print(f"{character.name} attacks {target.name}!")
-        damage = int(character.attack * 0.5)
+        damage = int(character.attack.total * 0.5)
         target.receive_attack(damage, character, battle)
 
 effect_enforced_vigor = ActiveEffect(
@@ -63,42 +64,42 @@ effect_enforced_vigor = ActiveEffect(
 # Passive Effects
 def thousand_divine_cuts(character, battle):
     for enemy in battle.get_character_enemies(character):
-        old_defense = enemy.defense
-        enemy.defense = min(enemy.defense - 1, int(enemy.defense * 0.95))
-        print(f"{enemy.name} DEF reduced by 5% {old_defense} -> {enemy.defense}")
+        old_defense = enemy.defense.total
+        enemy.defense.add_modifier(0.95, is_multiplicative=True)
+        print(f"{enemy.name} DEF reduced by 5% {old_defense} -> {enemy.defense.total}")
         
 effect_thousand_divine_cuts = PassiveEffect("Thousand Divine Cuts", description="At the start of battle, All enemies have DEF reduced by 5%", 
                             effect_function=thousand_divine_cuts, trigger_condition=effects.trigger_on_start_of_battle)
 
 
 def early_stance(character, battle):
-    old_defense = character.defense
-    character.defense = max(character.defense + 1, int(character.defense * 1.2))
-    print(f"{character.name} enters an early stance. DEF increased by 20%. {old_defense} -> {character.defense}")
+    old_defense = character.defense.total
+    character.defense.add_modifier(1.2, is_multiplicative=True)
+    print(f"{character.name} enters an early stance. DEF increased by 20%. {old_defense} -> {character.defense.total}")
 
 effect_early_stance = PassiveEffect("Early Stance", description="For 5 turns, Increase DEF by 20%",
                                     effect_function=early_stance, trigger_condition=effects.trigger_within_first_x_turns(5))
 
 def engine(character, battle):
-    old_speed = character.speed
-    character.speed += 1
-    print(f"{character.name} SPD increased by 1. {old_speed} -> {character.speed}")
+    old_speed = character.speed.total
+    character.speed.add_modifier(1)
+    print(f"{character.name} SPD increased by 1. {old_speed} -> {character.speed.total}")
     
 effect_engine = PassiveEffect("Engine", description="After receiving an attack, SPD + 1",
                               effect_function=engine, trigger_condition=effects.trigger_on_receive_attack)
 
 
 def double_up(character, battle):
-    old_attack = character.attack
-    character.attack = max(character.attack + 1, int(character.attack * 1.01))
-    print(f"{character.name} ATK increased by 1%. {old_attack} -> {character.attack}")
+    old_attack = character.attack.total
+    character.attack.add_modifier(1.03, is_multiplicative=True)
+    print(f"{character.name} ATK increased by 3%. {old_attack} -> {character.attack.total}")
     
-effect_double_up = PassiveEffect("Double Up", description="After executing an attack, Increase ATK by 1%",
+effect_double_up = PassiveEffect("Double Up", description="After executing an attack, Increase ATK by 3%",
                                  effect_function=double_up, trigger_condition=effects.trigger_on_attack)
 
 
 def late_bloomer(character, battle):
-    character.hp = character.max_hp
+    character.max_hp.change_resource_by_perc(1.0)
     print(f"{character.name} fully recovers HP.")
     
 effect_late_bloomer = PassiveEffect("Late Bloomer", description="On Turn 2, Fully recover HP",
@@ -106,18 +107,18 @@ effect_late_bloomer = PassiveEffect("Late Bloomer", description="On Turn 2, Full
 
 
 def last_stance(character, battle):
-    old_attack = character.attack
-    character.attack = max(character.attack + 1, int(character.attack * 1.5))
+    old_attack = character.attack.total
+    character.attack.add_modifier(1.5, is_multiplicative=True)
     print(f"{character.name} ATK increased by 50%. {old_attack} -> {character.attack}")
     
 effect_last_stance = PassiveEffect("Last Stance", description="When HP is below 50%. Increase ATK by 50%", effect_function=last_stance,
-                                   trigger_condition=effects.trigger_on_stat_threshold("hp", lambda hp, character: hp < character.max_hp / 2))
+                                   trigger_condition=effects.trigger_on_stat_threshold(lambda character: character.max_hp.get_percentage() < 0.5))
 
 
 def wolf_hunger(character, battle):
     for ally in battle.get_character_allies(character):
-        old_attack = ally.attack
-        ally.attack = max(ally.attack + 1, int(ally.attack * 1.5))
+        old_attack = ally.attack.total
+        ally.attack.add_modifier(1.5, is_multiplicative=True)
         print(f"{ally.name} ATK increased by 50%. {old_attack} -> {ally.attack}")
         
 effect_wolf_hunger = PassiveEffect("Wolf Hunger", description="When killed by an enemy. Increase allies ATK by 50%",
@@ -140,7 +141,7 @@ effect_status_poison = StatusEffect("Poison", description="Takes 6% of Max HP as
 # Runes
 power_rune = Rune(
     name="Power Rune",
-    active_effects=[effect_large_slice, effect_enforced_vigor],
+    active_effects=[effect_large_slice, effect_enforced_vigor, effect_guard_switch, effect_heal_all],
     passive_effects=[effect_thousand_divine_cuts, effect_early_stance, effect_double_up, effect_engine, effect_late_bloomer, effect_last_stance, effect_wolf_hunger]
 )
 
