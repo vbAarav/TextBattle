@@ -2,9 +2,11 @@ import time
 import random
 
 class Player:
-    def __init__(self, name, characters=None):
-        self.characters = characters if characters is None else characters
+    def __init__(self, name, characters=None, location=None, inventory=None):
+        self.characters = [] if characters is None else characters
         self.name = name
+        self.location = location
+        self.inventory = [] if inventory is None else inventory
         
     def get_input(self, message, valid_choices):
         choice = input(message).strip()
@@ -14,13 +16,24 @@ class Player:
             choice = input(message).strip()
         return choice
     
+    def travel_to(self, location):
+        self.location = location
+        
+    def __repr__(self):
+        toReturn = f"{self.name}"
+        return toReturn
+    
 class Enemy(Player):
-    def __init__(self):
-        super().__init__("Enemy")
+    def __init__(self, characters=None):
+        self.rewards = {}
+        super().__init__("Enemy", characters)
         
     def get_input(self, message, valid_choices):
         choice = random.choice(valid_choices)
         time.sleep(1)
         return choice
+    
+    def generate_rewards(self):
+        pass     
         
         

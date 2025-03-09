@@ -3,18 +3,19 @@ import time
 
 class Character:
     def __init__(self, name, max_hp, attack, defense, speed, runes=None, status_effects=None, description=""):
-        # Stats
+        # Description
         self.name = name
+        self.description = description
+        
+        # Stats
         self.max_hp = max_hp
         self.hp = self.max_hp
         self.attack = attack
         self.speed = speed
-        self.defense = defense
-        
-        # Description
-        self.description = description
+        self.defense = defense      
 
-        # Runes
+        # Belongings
+        self.items = []
         self.runes = runes if runes is not None else []
         for rune in self.runes:
             rune.equipped_character = self
