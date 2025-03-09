@@ -2,7 +2,7 @@ import runes
 import time
 
 class Character:
-    def __init__(self, name, max_hp, attack, defense, speed, runes=[], status_effects=[]):
+    def __init__(self, name, max_hp, attack, defense, speed, runes=None, status_effects=None):
         # Stats
         self.name = name
         self.max_hp = max_hp
@@ -10,17 +10,18 @@ class Character:
         self.attack = attack
         self.speed = speed
         self.defense = defense
-        
+
         # Runes
-        self.runes = runes
+        self.runes = runes if runes is not None else []
         for rune in self.runes:
             rune.equipped_character = self
-            
-        # Status Effects
-        self.status_effects = status_effects
+
+        # Status Effects 
+        self.status_effects = status_effects if status_effects is not None else []
+
         
     def __repr__(self):
-        return f"Character({self.name}, HP: {self.hp}/{self.max_hp}, ATK: {self.attack}, DEF: {self.defense}, SPD: {self.speed}), Statuses: {self.status_effects}"
+        return f"{self.name} (HP: {self.hp}/{self.max_hp}, ATK: {self.attack}, DEF: {self.defense}, SPD: {self.speed}) Statuses: {self.status_effects}"
         
     def equip_rune(self, rune):
         self.runes.append(rune)
@@ -57,9 +58,10 @@ class Character:
         time.sleep(1)
         
     def add_status_effect(self, status_effect):
-        self.status_effects.append(status_effect)
-        print(f"{self.name} is now affected by {status_effect.name}.")
-        time.sleep(1)
+        if status_effect not in self.status_effects:
+            self.status_effects.append(status_effect)
+            print(f"{self.name} is now affected by {status_effect.name}.")
+            time.sleep(1)
         
     # Rune Methods
     def activate_active_effect(self, rune, effect, battle):

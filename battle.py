@@ -1,11 +1,23 @@
 import time
-
+import effects
 class Battle:
     # Constructor
     def __init__(self, teamA, teamB):
         self.teamA = teamA
         self.teamB = teamB
         self.turn = 0
+        
+    def __repr__(self):
+        toReturn = "\n-----------------------------------------"
+        toReturn += f"\n                 Turn: {self.turn}"
+        toReturn += f"\nTeam 1:"
+        for character in self.teamA:
+            toReturn += f"\n{character}"
+        toReturn += f"\nTeam 2:"
+        for character in self.teamB:
+            toReturn += f"\n{character}"
+        toReturn += "\n-----------------------------------------"
+        return toReturn
 
     # Get Methods
     def get_character_allies(self, character):
@@ -30,22 +42,14 @@ class Battle:
                 effect.check_and_apply(character, self, **kwargs, trigger=trigger)
     
     def display_battle_status(self):
-        print("\n-----------------------------------------")
-        print(f"Turn: {self.turn}")
-        print("Team 1:")
-        for character in self.teamA:
-            print(f"{character.name} (HP: {character.hp}/{character.max_hp}) (ATK: {character.attack}) (DEF: {character.defense}) (SPD: {character.speed})")
-        print("Team 2:")
-        for character in self.teamB:
-            print(f"{character.name} (HP: {character.hp}/{character.max_hp}) (ATK: {character.attack}) (DEF: {character.defense}) (SPD: {character.speed})")
-        print("\n-----------------------------------------")
+        print(self)
         time.sleep(1)
 
     # Start the Battle
     def start_battle(self):
-        # Start of Battle
+        # Start of Battles
         self.turn = 0
-
+        
         # Trigger Start of Battle Effects
         for team in [self.teamA, self.teamB]:
             for character in team:
