@@ -196,7 +196,7 @@ def thousand_divine_cuts(character, battle):
     for enemy in battle.get_character_enemies(character):
         old_defense = enemy.defense
         enemy.defense = min(enemy.defense - 1, int(enemy.defense * 0.95))
-        print(f"{enemy.name} DEF reduced by 5% ({old_defense}) -> ({enemy.defense})")
+        print(f"{enemy.name} DEF reduced by 5% {old_defense} -> {enemy.defense}")
 
 
 def early_stance(character, battle):
