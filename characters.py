@@ -21,7 +21,10 @@ class Character:
 
         
     def __repr__(self):
-        return f"{self.name} (HP: {self.hp}/{self.max_hp}, ATK: {self.attack}, DEF: {self.defense}, SPD: {self.speed}) Statuses: {self.status_effects}"
+        toReturn = f"{self.name} (HP: {self.hp}/{self.max_hp}, ATK: {self.attack}, DEF: {self.defense}, SPD: {self.speed})"
+        if len(self.status_effects) > 0:
+            toReturn += f" Statuses: {self.status_effects}"
+        return toReturn
         
     def equip_rune(self, rune):
         self.runes.append(rune)

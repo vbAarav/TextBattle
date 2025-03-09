@@ -38,6 +38,8 @@ class PassiveEffect(Effect):
     def check_and_apply(self, character, battle, **kwargs):
         """Checks if the condition is met and applies the effect if so."""
         if self.trigger_condition and self.trigger_condition(character, battle, **kwargs):
+            print(f"{character.name}'s {self.name} is triggered.")
+            time.sleep(1)
             self.apply(character, battle)
 
     def apply(self, character, battle):
@@ -79,7 +81,7 @@ class StatusEffect(Effect):
         
 
     def __repr__(self):
-        return f"StatusEffect({self.name})"
+        return f"{self.name}: {self.duration}"
 
 
 
@@ -149,7 +151,7 @@ def trigger_if_ally_present(name):
 
 # Active Effects
 def large_slice(character, battle):
-    target = battle.choose_target(battle.teamA + battle.teamB)
+    target = battle.choose_target(battle.get_all_characters(), character)
     if target:
         print(f"{character.name} attacks {target.name}!")
         multiplier = random.uniform(1.0, 1.5)
@@ -172,7 +174,7 @@ def swap_atk_def(character, battle):
 
 
 def damage_ally_and_poison_enemy(character, battle):
-    target = battle.choose_target(battle.teamA + battle.teamB)
+    target = battle.choose_target(battle.get_all_characters(), character)
     if (target in battle.get_character_allies(character)) and (target != character):
         # Deal Damage
         print(f"{character.name} attacks {target.name}!")
@@ -200,18 +202,21 @@ def thousand_divine_cuts(character, battle):
 
 
 def early_stance(character, battle):
+    old_defense = character.defense
     character.defense = max(character.defense + 1, int(character.defense * 1.2))
-    print(f"{character.name} enters an early stance. DEF increased by 20%.")
+    print(f"{character.name} enters an early stance. DEF increased by 20%. {old_defense} -> {character.defense}")
 
 
 def engine(character, battle):
+    old_speed = character.speed
     character.speed += 1
-    print(f"{character.name} SPD increased by 1.")
+    print(f"{character.name} SPD increased by 1. {old_speed} -> {character.speed}")
 
 
 def double_up(character, battle):
+    old_attack = character.attack
     character.attack = max(character.attack + 1, int(character.attack * 1.01))
-    print(f"{character.name} ATK increased by 1%.")
+    print(f"{character.name} ATK increased by 1%. {old_attack} -> {character.attack}")
 
 
 def late_bloomer(character, battle):
@@ -220,14 +225,16 @@ def late_bloomer(character, battle):
 
 
 def last_stance(character, battle):
+    old_attack = character.attack
     character.attack = max(character.attack + 1, int(character.attack * 1.5))
-    print(f"{character.name} ATK increased by 50%.")
+    print(f"{character.name} ATK increased by 50%. {old_attack} -> {character.attack}")
 
 
 def wolf_hunger(character, battle):
     for ally in battle.get_character_allies(character):
+        old_attack = ally.attack
         ally.attack = max(ally.attack + 1, int(ally.attack * 1.5))
-        print(f"{ally.name} ATK increased by 50%.")
+        print(f"{ally.name} ATK increased by 50%. {old_attack} -> {ally.attack}")
         
         
         
