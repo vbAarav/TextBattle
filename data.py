@@ -1,4 +1,4 @@
-from characters import Character
+from characters import Character, Colour, Damage
 from runes import Rune
 from effects import ActiveEffect, PassiveEffect, StatusEffect
 import effects
@@ -13,7 +13,8 @@ def large_slice(character, battle):
     if target:
         print(f"{character.name} attacks {target.name}!")
         multiplier = random.uniform(1.0, 1.5)
-        damage = max(character.attack.total + 1, int(character.attack.total * multiplier))
+        damage = Damage()
+        damage.build(max(character.attack.total + 1, int(character.attack.total * multiplier)), character, target)
         target.receive_attack(damage, character, battle)
         time.sleep(1)
         
@@ -40,7 +41,8 @@ def damage_ally_and_poison_enemy(character, battle):
     if (target in battle.get_character_allies(character)) and (target != character):
         # Deal Damage
         print(f"{character.name} attacks {target.name}!")
-        damage = max(character.attack.total + 1, int(character.attack.total * 1.8))
+        damage = Damage()
+        damage.build(max(character.attack.total + 1, int(character.attack.total * 1.8)), character, target)
         target.receive_attack(damage, character, battle)
 
         # Poison
@@ -50,7 +52,8 @@ def damage_ally_and_poison_enemy(character, battle):
     else:
         # Deal Damage
         print(f"{character.name} attacks {target.name}!")
-        damage = int(character.attack.total * 0.5)
+        damage = Damage()
+        damage.build(int(character.attack.total * 0.5), character, target)
         target.receive_attack(damage, character, battle)
 
 effect_enforced_vigor = ActiveEffect(
@@ -109,17 +112,16 @@ effect_late_bloomer = PassiveEffect("Late Bloomer", description="On Turn 2, Full
 def last_stance(character, battle):
     old_attack = character.attack.total
     character.attack.add_modifier(1.5, is_multiplicative=True)
-    print(f"{character.name} ATK increased by 50%. {old_attack} -> {character.attack}")
+    print(f"{character.name} ATK increased by 50%. {old_attack} -> {character.attack.total}")
     
-effect_last_stance = PassiveEffect("Last Stance", description="When HP is below 50%. Increase ATK by 50%", effect_function=last_stance,
-                                   trigger_condition=effects.trigger_on_stat_threshold(lambda character: character.max_hp.get_percentage() < 0.5))
+effect_last_stance = PassiveEffect("Last Stance", description="When HP is below 50%. Increase ATK by 50%", effect_function=last_stance, trigger_condition=effects.trigger_on_stat_threshold(lambda character: character.max_hp.get_percentage() < 0.5))
 
 
 def wolf_hunger(character, battle):
     for ally in battle.get_character_allies(character):
         old_attack = ally.attack.total
         ally.attack.add_modifier(1.5, is_multiplicative=True)
-        print(f"{ally.name} ATK increased by 50%. {old_attack} -> {ally.attack}")
+        print(f"{ally.name} ATK increased by 50%. {old_attack} -> {ally.attack.total}")
         
 effect_wolf_hunger = PassiveEffect("Wolf Hunger", description="When killed by an enemy. Increase allies ATK by 50%",
                                    effect_function=wolf_hunger, trigger_condition=effects.trigger_on_death_by_enemy)
@@ -158,8 +160,35 @@ glowing_grass_rune = Rune(
 
 
 # Characters
-chr_slime = Character(
-    name="Slime",
+chr_red_slime = Character(
+    name="Red Slime",
+    type=Colour.RED,
+    max_hp=20,
+    attack=1,
+    defense=1,
+    speed=1,
+    description=
+    """
+        A sentient collection of magical liquid. 
+    """
+)
+
+chr_blue_slime = Character(
+    name="Blue Slime",
+    type=Colour.BLUE,
+    max_hp=20,
+    attack=1,
+    defense=1,
+    speed=1,
+    description=
+    """
+        A sentient collection of magical liquid. 
+    """
+)
+
+chr_green_slime = Character(
+    name="Green Slime",
+    type=Colour.GREEN,
     max_hp=20,
     attack=1,
     defense=1,
@@ -193,4 +222,6 @@ chr_azelgram = Character(
 
 # Areas
 area_long_plains = map.Area("Long Plains")
-area_long_plains.add_enemy(chr_slime, 8)
+area_long_plains.add_enemy(chr_red_slime, 1)
+area_long_plains.add_enemy(chr_blue_slime, 1)
+area_long_plains.add_enemy(chr_green_slime, 1)
