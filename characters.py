@@ -1,17 +1,32 @@
 import runes
 import time
+import math
+import random
+from enum import Enum, auto
 
+# Character Class
 class Character:
-    def __init__(self, name, max_hp, attack, defense, speed, runes=None, status_effects=None, description=""):
+    def __init__(self, name, max_hp, attack, defense, speed,
+                 resistance=0, crit_chance=0.1, crit_resistatnce=0, crit_damage=1.5, crit_shield=0,
+                 type=None, runes=None, status_effects=None, description=""):
         # Description
         self.name = name
         self.description = description
+        
+        # Properties
+        self.type = Colour.NONE if type is None else type
         
         # Stats
         self.max_hp = ResourceStat(max_hp, name="MAXHP")
         self.attack = Stat(attack, name="ATK")
         self.speed = Stat(speed, name="SPD")
-        self.defense = Stat(defense, name="DEF")      
+        self.defense = Stat(defense, name="DEF")
+        
+        self.resistance = Stat(resistance, name="RES", is_natural=False)          
+        self.crit_chance = Stat(crit_chance, name="CC", is_float=True)
+        self.crit_resistance = Stat(crit_resistatnce, name="CR", is_float=True)
+        self.crit_damage = Stat(crit_damage, name="CD", is_float=True)  
+        self.crit_shield = Stat(crit_shield, name="CS", is_float=True)   
 
         # Belongings
         self.items = []
@@ -24,7 +39,7 @@ class Character:
 
         
     def __repr__(self):
-        toReturn = f"{self.name} (HP: {self.max_hp.resource_value}/{self.max_hp.total}, ATK: {self.attack.total}, DEF: {self.defense.total}, SPD: {self.speed.total})"
+        toReturn = f"{self.name} [{self.type}](HP: {self.max_hp.resource_value}/{self.max_hp.total}, ATK: {self.attack.total}, DEF: {self.defense.total}, SPD: {self.speed.total})"
         
         # Additive
         for stat in [self.max_hp, self.attack, self.defense, self.speed]:
@@ -51,19 +66,29 @@ class Character:
 
     # Character Property Manipulation Methods
     def receive_attack(self, incoming_damage, attacker, battle):
-        damage = max(0, incoming_damage - self.defense.total)
-        self.take_damage(damage, battle, source=attacker)
+        incoming_damage.crit_amount -= self.crit_shield.total # Calculate Damage        
+        reduction = self.defense.total * ((self.resistance.total/100) + 1) # Calculate Resistance
+        amount_damage = max(0, incoming_damage.total - reduction) # Total Damage
+        
+        if incoming_damage.is_crit:
+            print(f"CRITICAL HIT!!!")
+            time.sleep(1)        
+        
+        self.take_damage(amount_damage, battle, source=attacker)
         time.sleep(1)
 
         # Trigger passive effects after receiving an attack
         battle.trigger_effects(self, trigger="on_receive_attack", attacker=attacker)
         time.sleep(1)
-        
 
     def attack_target(self, target, battle):
         print(f"{self.name} attacks {target.name}!")
         time.sleep(1)
-        target.receive_attack(self.attack.total, self, battle)
+        
+        # Calculate Damage
+        damage = Damage()
+        damage.build(self.attack.total, self, target)        
+        target.receive_attack(damage, self, battle)
         
         # Trigger passive effects when performing an attack
         battle.trigger_effects(self, trigger="on_attack", target=target)
@@ -99,15 +124,40 @@ class Character:
         # Trigger passive effects when dying by an ally or enemy
         trigger_type = "on_death_by_ally" if source in battle.get_character_allies(self) else "on_death_by_enemy"
         battle.trigger_effects(self, trigger=trigger_type, killer=source)
-   
+
+# Damage
+class Damage:
+    def __init__(self, amount=0, crit_amount=0, is_crit=False, type_amount=0, has_advantage=False, has_disadvantage=False):
+        self.base_amount = amount
+        self.crit_amount = crit_amount
+        self.is_crit = is_crit
+        self.type_amount = type_amount
+        self.has_advantage = has_advantage
+        self.has_disadvantage = has_disadvantage
+        
+    def build(self, amount, attacker, target):
+        self.base_amount = amount
+        self.is_crit = random.random() <= (attacker.crit_chance.total - target.crit_resistance.total)
+        self.crit_amount = attacker.crit_damage.total
+        self.has_advantage = attacker.type.has_advantage(target.type)
+        self.has_disadvantage = attacker.type.has_disadvantage(target.type)
+        self.type_amount = 0.5 if self.has_disadvantage else (1.5 if self.has_advantage else 1) 
+        
+    @property
+    def total(self):
+        total = (self.base_amount + random.uniform(0, (math.log10(self.base_amount) + 1) * 10)) * self.type_amount * self.crit_amount
+        return int(math.floor(total))
 
 # Stats    
 class Stat:
-    def __init__(self, base_value, name=None):
+    def __init__(self, base_value, name=None, is_natural=True, is_float=False):
         self.name = None if name is None else name
         self.base_value = base_value
         self.additive_modifiers = []  # Flat increases/decreases
         self.multiplicative_modifiers = []  # Percentage-based increases
+        
+        self.is_natural = is_natural
+        self.is_float = is_float
 
     def add_modifier(self, value: float, is_multiplicative: bool = False):
         """Adds a modifier. Set is_multiplicative=True for percentage-based modifiers."""
@@ -129,7 +179,11 @@ class Stat:
         total_value = self.base_value + sum(self.additive_modifiers)
         for multiplier in self.multiplicative_modifiers:
             total_value = total_value * multiplier
-        return max(0, int(total_value))  # Ensure non-negative stats                                                    
+        if self.is_natural:
+            total_value = max(0, total_value)  # Ensure non-negative stats 
+        if not self.is_float:
+            total_value = int(total_value)
+        return total_value                                                   
 
     def __repr__(self):
         return f"Stat(base={self.base_value}, total={self.total})"
@@ -153,6 +207,56 @@ class ResourceStat(Stat):
     def __repr__(self):
         return f"Stat(base={self.resource_value}/{self.base_value}, total={self.resource_value}/{self.total})"
 
+# Colour Type
+class Colour(Enum):
+    NONE = auto()
+    RED = auto()
+    BLUE = auto()
+    GREEN = auto()
+    PURPLE = auto()
+    YELLOW = auto()
+    
+    def random_type():
+        return random.choice((Colour.RED, Colour.BLUE, Colour.GREEN, Colour.PURPLE, Colour.YELLOW))
+    
+    # Has Advantage
+    def has_advantage(self, other):
+        if self == Colour.RED and other == Colour.GREEN:
+            return True
+        if self == Colour.BLUE and other == Colour.RED:
+            return True
+        if self == Colour.GREEN and other == Colour.BLUE:
+            return True
+        if self == Colour.PURPLE and other == Colour.PURPLE:
+            return True
+        if self == Colour.YELLOW and other == Colour.YELLOW:
+            return True
+        return False
+        
+    # Has Disadvantage
+    def has_disadvantage(self, other):
+        if self == Colour.RED and other == Colour.BLUE:
+            return True
+        if self == Colour.BLUE and other == Colour.GREEN:
+            return True
+        if self == Colour.GREEN and other == Colour.RED:
+            return True
+        return False
+    
+    def __str__(self):
+        if self == Colour.NONE:
+            return "NON"
+        if self == Colour.RED:
+            return "RED"
+        if self == Colour.BLUE:
+            return "BLU"
+        if self == Colour.GREEN:
+            return "GRN"
+        if self == Colour.YELLOW:
+            return "YLW"
+        if self == Colour.PURPLE:
+            return "PUR"
+        
                 
 
     
