@@ -8,6 +8,17 @@ import map
 
 
 # Active Effects
+def rune_force(character, battle):
+    target = battle.choose_target(battle.get_all_characters(), character)
+    if target:
+        print(f"{character.name} attacks {target.name}!")
+        multiplier = 1.2
+        damage = Damage().build(max(character.attack.total + 1, int(character.attack.total * multiplier)), character, target)
+        target.receive_attack(damage, character, battle)
+        time.sleep(1) 
+        
+effect_rune_force = ActiveEffect("Rune Force", description="Attacks the target. Dealing 120% of ATK as Damage", effect_function=rune_force)
+    
 def large_slice(character, battle):
     target = battle.choose_target(battle.get_all_characters(), character)
     if target:
@@ -125,9 +136,38 @@ def wolf_hunger(character, battle):
         
 effect_wolf_hunger = PassiveEffect("Wolf Hunger", description="When killed by an enemy. Increase allies ATK by 50%",
                                    effect_function=wolf_hunger, trigger_condition=effects.trigger_on_death_by_enemy)
+
+
+def burning_adrenaline(character, battle):
+    old_crit_chance = character.crit_chance.total
+    character.crit_chance.add_modifier(0.03)
+    print(f"{character.name} CRIT CHANCE increased by 3% {old_crit_chance * 100}% -> {character.crit_chance.total * 100}%")
         
-   
-   
+effect_burning_adrenaline = PassiveEffect("Burning Adrenaline", description="+3% Crit Chance", effect_function=burning_adrenaline, trigger_condition=effects.trigger_on_start_of_battle)
+
+def harden(character, battle):
+    old_res = character.resistance.total
+    character.resistance.add_modifier(1.03, is_multiplicative=True)
+    print(f"{character.name} RES increased by 3% {old_res} -> {character.resistance.total}")
+        
+effect_harden = PassiveEffect("Harden", description="+3% Resistance", effect_function=harden, trigger_condition=effects.trigger_on_start_of_battle)
+        
+def flowing_ring(character, battle):
+    old_hp = character.max_hp.total
+    character.max_hp.add_modifier(1.03, is_multiplicative=True)
+    print(f"{character.name} MAXHP increased by 3% {old_hp} -> {character.max_hp.total}")
+        
+effect_flowing_ring = PassiveEffect("Flowing Ring", description="+3% MAXHP", effect_function=flowing_ring, trigger_condition=effects.trigger_on_start_of_battle)
+
+def quick_boots(character, battle):
+    old_spd = character.speed.total
+    character.speed.add_modifier(1.03, is_multiplicative=True)
+    print(f"{character.name} SPD increased by 3% {old_spd} -> {character.speed.total}")
+        
+effect_quick_boots = PassiveEffect("Quick Boots", description="+3% SPD", effect_function=quick_boots, trigger_condition=effects.trigger_on_start_of_battle)
+        
+        
+        
         
 # Status Effects
 def poison(character, battle):
@@ -137,16 +177,41 @@ def poison(character, battle):
     
 effect_status_poison = StatusEffect("Poison", description="Takes 6% of Max HP as damage at the start of turn", duration=3, ongoing_effect=poison, trigger_condition=effects.trigger_on_start_of_turn)
 
+def stun(character, battle):
+    print(f"{character.name} is stunned")
+
+effect_status_stun = StatusEffect("Stun", description="Skips the character's turn", duration=1, ongoing_effect=stun, trigger_condition=effects.trigger_on_start_of_character_turn)
+
 
 
 
 # Runes
+fire_rune = Rune(
+    name="Fire Rune",
+    active_effects=[effect_rune_force],
+    passive_effects=[effect_burning_adrenaline]    
+)
+water_rune = Rune(
+    name="Water Rune",
+    active_effects=[effect_rune_force],
+    passive_effects=[effect_flowing_ring]    
+)
+earth_rune = Rune(
+    name="Earth Rune",
+    active_effects=[effect_rune_force],
+    passive_effects=[effect_harden]    
+)
+wind_rune = Rune(
+    name="Wind Rune",
+    active_effects=[effect_rune_force],
+    passive_effects=[effect_quick_boots]    
+)
+
 power_rune = Rune(
     name="Power Rune",
     active_effects=[effect_large_slice, effect_enforced_vigor, effect_guard_switch, effect_heal_all],
     passive_effects=[effect_thousand_divine_cuts, effect_early_stance, effect_double_up, effect_engine, effect_late_bloomer, effect_last_stance, effect_wolf_hunger]
 )
-
 crystalised_ice_rune = Rune(
     name="Crystalised Ice Rune",
     active_effects=[effect_guard_switch]
@@ -163,22 +228,36 @@ glowing_grass_rune = Rune(
 chr_red_slime = Character(
     name="Red Slime",
     type=Colour.RED,
-    max_hp=20,
-    attack=1,
-    defense=1,
+    max_hp=80,
+    attack=2,
+    defense=2,
     speed=1,
     description=
     """
         A sentient collection of magical liquid. 
     """
+)
+
+chr_red_magic_slime = Character(
+    name="Red Magic Slime",
+    type=Colour.RED,
+    max_hp=80,
+    attack=3,
+    defense=2,
+    speed=1,
+    description=
+    """
+        A sentient collection of magical liquid. 
+    """,
+    runes=[fire_rune]
 )
 
 chr_blue_slime = Character(
     name="Blue Slime",
     type=Colour.BLUE,
-    max_hp=20,
-    attack=1,
-    defense=1,
+    max_hp=80,
+    attack=2,
+    defense=2,
     speed=1,
     description=
     """
@@ -186,17 +265,45 @@ chr_blue_slime = Character(
     """
 )
 
+chr_blue_magic_slime = Character(
+    name="Blue Magic Slime",
+    type=Colour.BLUE,
+    max_hp=80,
+    attack=3,
+    defense=2,
+    speed=1,
+    description=
+    """
+        A sentient collection of magical liquid. 
+    """,
+    runes=[water_rune]
+)
+
 chr_green_slime = Character(
     name="Green Slime",
     type=Colour.GREEN,
-    max_hp=20,
-    attack=1,
-    defense=1,
+    max_hp=80,
+    attack=2,
+    defense=2,
     speed=1,
     description=
     """
         A sentient collection of magical liquid. 
     """
+)
+
+chr_green_magic_slime = Character(
+    name="Green Magic Slime",
+    type=Colour.GREEN,
+    max_hp=80,
+    attack=3,
+    defense=2,
+    speed=1,
+    description=
+    """
+        A sentient collection of magical liquid. 
+    """,
+    runes=[wind_rune]
 )
 
 chr_azelgram = Character(
@@ -222,6 +329,9 @@ chr_azelgram = Character(
 
 # Areas
 area_long_plains = map.Area("Long Plains")
-area_long_plains.add_enemy(chr_red_slime, 1)
-area_long_plains.add_enemy(chr_blue_slime, 1)
-area_long_plains.add_enemy(chr_green_slime, 1)
+area_long_plains.add_enemy(chr_red_slime, 2)
+area_long_plains.add_enemy(chr_red_magic_slime, 1)
+area_long_plains.add_enemy(chr_blue_slime, 2)
+area_long_plains.add_enemy(chr_blue_magic_slime, 1)
+area_long_plains.add_enemy(chr_green_slime, 2)
+area_long_plains.add_enemy(chr_green_magic_slime, 1)

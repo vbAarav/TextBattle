@@ -12,7 +12,7 @@ class Area:
         
     # Events
     def explore_area(self, player):
-        enemies = random.choices(list(self.enemies.keys()), weights=self.enemies.values(), k=1)
+        enemies = random.choices(list(self.enemies.keys()), weights=self.enemies.values(), k=random.randint(1, min(4, len(self.enemies.values()))))
         battle.Battle(player, players.Enemy(characters=enemies)).start_battle()
     
     # Getters and Setters
