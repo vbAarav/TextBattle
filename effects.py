@@ -91,6 +91,9 @@ def trigger_on_start_of_battle(character, battle, **kwargs):
 def trigger_on_start_of_turn(character, battle, **kwargs):
     return kwargs.get("trigger") == "on_start_of_turn"
 
+def trigger_on_start_of_character_turn(character, battle, **kwargs):
+    return kwargs.get("trigger") == "on_start_of_character_turn"
+
 
 def trigger_on_receive_attack(character, battle, **kwargs):
     return kwargs.get("trigger") == "on_receive_attack"

@@ -78,6 +78,7 @@ class Battle:
                 self.turn += 1
                 
                 # Trigger Start of Turn Effects
+                self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
                 for chr in self.get_all_characters():
                     self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)
                 
