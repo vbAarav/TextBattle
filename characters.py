@@ -7,7 +7,7 @@ from enum import Enum, auto
 # Character Class
 class Character:
     def __init__(self, name, max_hp, attack, defense, speed,
-                 resistance=0, crit_chance=0.1, crit_resistatnce=0, crit_damage=1.5, crit_shield=0,
+                 resistance=0, crit_chance=0.1, crit_resistatnce=0, crit_damage=1.5, crit_shield=0, evasion=0, accuracy=0,
                  type=None, runes=None, status_effects=None, description=""):
         # Description
         self.name = name
@@ -27,6 +27,9 @@ class Character:
         self.crit_resistance = Stat(crit_resistatnce, name="CR", is_float=True)
         self.crit_damage = Stat(crit_damage, name="CD", is_float=True)  
         self.crit_shield = Stat(crit_shield, name="CS", is_float=True)   
+        
+        self.evasion = Stat(evasion, name="EV", is_float=True)
+        self.accuracy = Stat(accuracy, name="ACC", is_float=True)
 
         # Belongings
         self.items = []
