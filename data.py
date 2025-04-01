@@ -13,7 +13,8 @@ def rune_force(character, battle):
     if target:
         print(f"{character.name} attacks {target.name}!")
         multiplier = 1.2
-        damage = Damage().build(max(character.attack.total + 1, int(character.attack.total * multiplier)), character, target)
+        damage = Damage()
+        damage.build(max(character.attack.total + 1, int(character.attack.total * multiplier)), character, target)
         target.receive_attack(damage, character, battle)
         time.sleep(1) 
         
@@ -71,6 +72,45 @@ effect_enforced_vigor = ActiveEffect(
     "Enforced Vigor", description="Attacks the target. Dealing 50% of ATK as Damage. If the target is an ally. Attacks the target. Dealing 180% of ATK as Damage and poison a random enemy for 3 turns.",
     effect_function=damage_ally_and_poison_enemy)
 
+def polish(character, battle):
+    for target in battle.get_character_allies(character):
+        old_defense = target.defense.total
+        target.defense.add_modifier(1.05, is_multiplicative=True)
+        print(f"{target.name} DEF increased by 5% {old_defense} -> {target.defense.total}")
+        
+
+effect_polish = ActiveEffect(
+    "Polish", description="Increases all allies DEF by 5% for 3 turns.",
+    effect_function=polish
+)
+
+def gale_lightning(character, battle):
+    # Deal Damage
+    target = battle.choose_target(battle.get_all_characters(), character)
+    print(f"{character.name} attacks {target.name}!")
+    damage = Damage()
+    damage.build(max(character.attack.total + 1, int(character.attack.total * 1.8)), character, target)
+    target.receive_attack(damage, character, battle)
+    
+    # Speed Increase
+    old_speed = character.speed.total
+    character.speed.add_modifier(1.1, is_multiplicative=True)
+    print(f"{character.name} SPD increased by 10% {old_speed} -> {character.speed.total}")
+    
+effect_gale_lightning = ActiveEffect(
+    "Gale Lightning", description="Deals 100% ATK damage and increases its SPD by 10% for 2 turns.",
+    effect_function=gale_lightning
+)
+
+def evasive_agility(character, battle):
+    old_evasion = character.evasion.total
+    character.evasion.add_modifier(1.15, is_multiplicative=True)
+    print(f"{character.name} EV increased by 10% {old_evasion} -> {character.evasion.total}")
+
+effect_evasive_agility = ActiveEffect(
+    "Evasive Agility", description="+15% Evasion for 3 turns.",
+    effect_function=evasive_agility
+)
 
 
 
@@ -186,41 +226,57 @@ effect_status_stun = StatusEffect("Stun", description="Skips the character's tur
 
 
 # Runes
+power_rune = Rune(
+    name="Power Rune",
+    active_effects=[effect_rune_force, effect_large_slice, effect_enforced_vigor, effect_guard_switch, effect_heal_all],
+    passive_effects=[effect_thousand_divine_cuts, effect_early_stance, effect_double_up, effect_engine, effect_late_bloomer, effect_last_stance, effect_wolf_hunger]
+)
+
 fire_rune = Rune(
     name="Fire Rune",
     active_effects=[effect_rune_force],
     passive_effects=[effect_burning_adrenaline]    
 )
+
 water_rune = Rune(
     name="Water Rune",
     active_effects=[effect_rune_force],
     passive_effects=[effect_flowing_ring]    
 )
+
 earth_rune = Rune(
     name="Earth Rune",
     active_effects=[effect_rune_force],
     passive_effects=[effect_harden]    
 )
+
 wind_rune = Rune(
     name="Wind Rune",
     active_effects=[effect_rune_force],
     passive_effects=[effect_quick_boots]    
 )
 
-power_rune = Rune(
-    name="Power Rune",
-    active_effects=[effect_large_slice, effect_enforced_vigor, effect_guard_switch, effect_heal_all],
-    passive_effects=[effect_thousand_divine_cuts, effect_early_stance, effect_double_up, effect_engine, effect_late_bloomer, effect_last_stance, effect_wolf_hunger]
+rock_rune = Rune(
+    name="Rock Rune",
+    active_effects=[effect_rune_force, effect_polish]
 )
+
 crystalised_ice_rune = Rune(
     name="Crystalised Ice Rune",
-    active_effects=[effect_guard_switch]
+    active_effects=[effect_rune_force, effect_guard_switch]
 )
 
 glowing_grass_rune = Rune(
     name="Glowing Grass Rune",
-    active_effects=[effect_heal_all]
+    active_effects=[effect_rune_force, effect_heal_all]
 )
+
+blue_lightning_rune = Rune(
+    name="Blue Lightning Rune",
+    active_effects=[effect_evasive_agility, effect_gale_lightning]
+)
+
+
 
 
 
@@ -306,6 +362,35 @@ chr_green_magic_slime = Character(
     runes=[wind_rune]
 )
 
+chr_rock_golem = Character(
+    name="Rock Golem",
+    max_hp=50,
+    attack=6,
+    defense=10,
+    speed=10,
+    runes=[rock_rune]
+)
+
+chr_storm_hawk = Character(
+    name="Storm Hawk",
+    type=Colour.BLUE,
+    max_hp=30,
+    attack=5,
+    defense=3,
+    speed=8,
+    runes=[blue_lightning_rune]
+)
+
+chr_deep_sea_snake = Character(
+    name="Deep Sea Snake",
+    type=Colour.BLUE,
+    max_hp=40,
+    attack=7,
+    defense=5,
+    speed=3,
+    runes=[water_rune]
+)
+
 chr_azelgram = Character(
     name="Azelgram",
     max_hp=100,
@@ -325,6 +410,8 @@ chr_azelgram = Character(
         After enough souls, he grew wings made of an eldritch horror.      
     """
 )
+
+
 
 
 # Areas
