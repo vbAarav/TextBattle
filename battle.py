@@ -58,33 +58,15 @@ class Battle:
         for effect in character.status_effects:
             effect.check(character, self, **kwargs, trigger=trigger)
 
-        # Sigil Effects
-        for sigil in character.sigils:
-            for effect in sigil.passive_effects:
-                effect.check(character, self, **kwargs, trigger=trigger)
-                
-    def add_duration(self):
-        for character in self.get_all_characters():
-            # Status Effects
-            for effect in character.status_effects:
-                effect.add_duration(character, self)
-            
-            # Sigil Effects
-                for sigil in character.sigils:
-                    for passive in sigil.passive_effects:
-                        passive.add_duration(self)
-                
-    def next_turn(self, character):
-        self.turn += 1 
-        self.add_duration()
-        self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
-        self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
-        for chr in self.get_all_characters():
-            self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)   
-        time.sleep(1) 
-        
-        self.display_battle_status()  # Display Battle Status
-        self.choose_action(character)  # Choose Action
+        # Rune Effects
+        for rune in character.runes:
+            for effect in rune.passive_effects:
+                effect.check_and_apply(
+                    character, self, **kwargs, trigger=trigger)
+
+    def display_battle_status(self):
+        print(self)
+        time.sleep(1)
 
     # Start the Battle
     def start_battle(self):
