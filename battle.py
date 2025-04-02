@@ -1,13 +1,15 @@
 import time
 import effects
 
+
 class Battle:
     # Constructor
     def __init__(self, playerOne, playerTwo):
         self.playerOne = playerOne
         self.playerTwo = playerTwo
         self.turn = 0
-        
+        self.winner = None
+
     def __repr__(self):
         toReturn = "\n-----------------------------------------"
         toReturn += f"\n                 Turn: {self.turn}"
@@ -24,6 +26,7 @@ class Battle:
     # Get Methods
     def get_all_characters(self):
         return self.playerOne.characters + self.playerTwo.characters
+
     def get_character_allies(self, character):
         if character in self.playerOne.characters:
             return self.playerOne.characters
@@ -33,23 +36,28 @@ class Battle:
         if character in self.playerOne.characters:
             return self.playerTwo.characters
         return self.playerOne.characters
-    
+
     def get_player(self, character):
         if character in self.playerOne.characters:
             return self.playerOne
         return self.playerTwo
-    
+
+    def get_winner(self):
+        if self.winner:
+            return self.winner
+
     # Battle Methods
     def trigger_effects(self, character, trigger, **kwargs):
         # Status Effects
         for effect in character.status_effects:
             effect.update_effect(character, self, **kwargs, trigger=trigger)
-        
+
         # Rune Effects
         for rune in character.runes:
             for effect in rune.passive_effects:
-                effect.check_and_apply(character, self, **kwargs, trigger=trigger)
-    
+                effect.check_and_apply(
+                    character, self, **kwargs, trigger=trigger)
+
     def display_battle_status(self):
         print(self)
         time.sleep(1)
@@ -58,58 +66,64 @@ class Battle:
     def start_battle(self):
         # Start of Battles
         self.turn = 0
-        
+
         # Trigger Start of Battle Effects
         for character in self.get_all_characters():
-                self.trigger_effects(character, trigger="on_start_of_battle")              
+            self.trigger_effects(character, trigger="on_start_of_battle")
 
         # Battle Loop
-        while any(c.is_alive() for c in self.playerOne.characters) and any(c.is_alive() for c in self.playerTwo.characters):   
+        while any(c.is_alive() for c in self.playerOne.characters) and any(c.is_alive() for c in self.playerTwo.characters):
 
             # Calculate Turn Order
-            all_characters = sorted([c for c in self.get_all_characters() if c.is_alive()], key=lambda c: c.speed.total, reverse=True)
+            all_characters = sorted([c for c in self.get_all_characters(
+            ) if c.is_alive()], key=lambda c: c.speed.total, reverse=True)
 
             # Character Turns
             for character in all_characters:
                 if not character.is_alive():
                     continue
-                
+
                 # Start of Turn
                 self.turn += 1
-                
+
                 # Trigger Start of Turn Effects
-                self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
+                self.trigger_effects(
+                    character, trigger="on_start_of_character_turn", turn=self.turn)
                 for chr in self.get_all_characters():
-                    self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)
-                
+                    self.trigger_effects(
+                        chr, trigger="on_start_of_turn", turn=self.turn)
+
                 time.sleep(1)
-                self.display_battle_status() # Display Battle Status
+                self.display_battle_status()  # Display Battle Status
                 self.choose_action(character)  # Choose Action
-                
+
         self.end_battle()
 
-        
-            
-    def end_battle(self):   
+    def end_battle(self):
         # End of battle
         if any(c.is_alive() for c in self.playerOne.characters):
             print(f"{self.playerOne} wins!")
+            self.winner = self.playerOne
         else:
             print(f"{self.playerTwo} wins!")
-        
+            self.winner = self.playerTwo
 
     # Choose an Action
+
     def choose_action(self, character):
         print(f"\n{character.name}'s turn!")
         print("1. Attack")
-        print("2. Rune" if len([effect for runes in character.runes for effect in runes.active_effects]) > 0 else "")
+        print("2. Rune" if len(
+            [effect for runes in character.runes for effect in runes.active_effects]) > 0 else "")
 
         # Choose Action
         choices = ["1"]
-        choices.append("2") if len([effect for runes in character.runes for effect in runes.active_effects]) > 0 else None
-        choice = self.get_player(character).get_input("Choose an action: ", choices)
+        choices.append("2") if len(
+            [effect for runes in character.runes for effect in runes.active_effects]) > 0 else None
+        choice = self.get_player(character).get_input(
+            "Choose an action: ", choices)
         valid_choice = False
-        
+
         # Execute Chosen Action
         while not valid_choice:
             if choice == "1":
@@ -120,9 +134,9 @@ class Battle:
 
             else:
                 print("Invalid action!")
-            
-    
+
     # All Action Types
+
     def attack_action(self, character):
         target = self.choose_target(self.get_all_characters(), character)
         if target:
@@ -147,14 +161,15 @@ class Battle:
     def choose_target(self, targets, character, condition=True):
         print("\nChoose a target:")
         time.sleep(1)
-        
+
         # Display Targets
         targets = [t for t in targets if condition]
         for i, target in enumerate(targets):
             print(f"{i+1}. {target}")
-            
+
         time.sleep(1)
-        choice = self.get_player(character).get_input("Enter target number: ", [str(i+1) for i in range(len(targets))])
+        choice = self.get_player(character).get_input(
+            "Enter target number: ", [str(i+1) for i in range(len(targets))])
         if choice.isdigit():
             index = int(choice) - 1
             if 0 <= index < len(targets):
@@ -166,12 +181,13 @@ class Battle:
         if character.runes:
             print("\nChoose a rune:")
             time.sleep(1)
-            
+
             for i, rune in enumerate(character.runes):
                 print(f"{i+1}. {rune.name}: {rune.description}")
 
             time.sleep(1)
-            choice = self.get_player(character).get_input("Enter rune number: ", [str(i+1) for i in range(len(character.runes))])
+            choice = self.get_player(character).get_input("Enter rune number: ", [
+                str(i+1) for i in range(len(character.runes))])
             if choice.isdigit():
                 index = int(choice) - 1
                 if 0 <= index < len(character.runes):
@@ -188,7 +204,8 @@ class Battle:
                 print(f"{i+1}. {effect.name}: {effect.description}")
 
             time.sleep(1)
-            choice = self.get_player(rune.equipped_character).get_input("Enter effect number: ", [str(i+1) for i in range(len(rune.active_effects))])
+            choice = self.get_player(rune.equipped_character).get_input(
+                "Enter effect number: ", [str(i+1) for i in range(len(rune.active_effects))])
             if choice.isdigit():
                 index = int(choice) - 1
                 if 0 <= index < len(rune.active_effects):
