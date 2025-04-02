@@ -137,6 +137,41 @@ effect_evasive_agility = ActiveEffect(
 )
 
 
+def unstable_strength(character, battle):
+    target = battle.choose_target(battle.get_all_characters(), character)
+    if target:
+        print(f"{character.name} attacks {target.name}!")
+        multiplier = random.uniform(0.9, 1.5)
+        damage = Damage()
+        damage.build(max(character.attack.total + 1,
+                     int(character.attack.total * multiplier)), character, target)
+        damage.ignore_defense -= 0.2
+        target.receive_attack(damage, character, battle)
+        time.sleep(1)
+
+
+effect_unstable_strength = ActiveEffect(
+    "Unstable Strength", description="Deals (90 - 150)% ATK as Damage to the target. This attack ignores 20% of the target's DEF.",
+    effect_function=unstable_strength)
+
+
+def dark_pit(character, battle):
+    dead_characters = len(
+        [chr for chr in battle.get_all_characters() if not (chr.is_alive())])
+    for enemy in battle.get_character_enemies(character):
+        print(f"{character.name} attacks {enemy.name}!")
+        damage = Damage()
+        multiplier = 0.3 + (0.5 * dead_characters)
+        damage.build(int(character.attack.total *
+                     multiplier), character, enemy)
+        enemy.receive_attack(damage, character, battle)
+
+
+effect_dark_pit = ActiveEffect(
+    "Dark Pit", description="Deals 30% of ATK as Damage to all enemies. Increase multiplier by 50% for every dead character in battle.",
+    effect_function=dark_pit)
+
+
 # Passive Effects
 def thousand_divine_cuts(character, battle):
     for enemy in battle.get_character_enemies(character):
@@ -249,9 +284,46 @@ effect_quick_boots = PassiveEffect("Quick Boots", description="+3% SPD",
                                    effect_function=quick_boots, trigger_condition=effects.trigger_on_start_of_battle)
 
 
+def early_feast(character, battle):
+    old_atk = character.attack.total
+    old_crit_chance = character.crit_chance.total
+    character.attack.add_modifier(1.5, is_multiplicative=True)
+    character.crit_chance.add_modifier(0.5)
+    print(f"{character.name} ATK increased by 50% {old_atk} -> {character.attack.total}")
+    print(f"{character.name} CC increased by 50% {old_crit_chance * 100}% -> {character.crit_chance.total * 100}%")
+
+
+effect_early_feast = PassiveEffect("Early Feast", description="At the start of battle, Increase ATK and Crit Chance by 50% for 2 turns",
+                                   effect_function=early_feast, trigger_condition=effects.trigger_on_start_of_battle)
+
+
+def demon_hunger(character, battle):
+    old_attack = character.attack.total
+    character.attack.add_modifier(1.2, is_multiplicative=True)
+    print(f"{character.name} ATK increased by 20%. {old_attack} -> {character.attack.total}")
+
+
+effect_demon_hunger = PassiveEffect("Demon Hunger", description="Before attacking, if the target is a 'Demon', Increase ATK by 10% and inflict burn on the target.",
+                                    effect_function=demon_hunger, trigger_condition=effects.trigger_on_attack)
+
+
+def death_will_arrive(character, battle):
+    for enemy in battle.get_character_enemies(character):
+        if not (enemy.is_alive()):
+            old_attack = character.attack.total
+            character.attack.add_modifier(1.2, is_multiplicative=True)
+            print(
+                f"{character.name} ATK increased by 20%. {old_attack} -> {character.attack.total}")
+
+
+effect_death_will_arrive = PassiveEffect("Death Will Arrive", description="After attacking, if the target is dead, increase ATK by 20% of the target's ATK",
+                                         effect_function=death_will_arrive, trigger_condition=effects.trigger_on_attack)
+
 # Status Effects
+
+
 def poison(character, battle):
-    damage = character.max_hp * 0.06
+    damage = character.max_hp.total * 0.06
     print(f"{character.name} is poisoned")
     character.take_damage(damage, battle)
 
@@ -321,6 +393,18 @@ blue_lightning_rune = Rune(
     active_effects=[effect_evasive_agility, effect_gale_lightning]
 )
 
+purple_power_rune = Rune(
+    name="Purple Power Rune",
+    active_effects=[effect_rune_force, effect_unstable_strength],
+    passive_effects=[effect_early_feast, effect_demon_hunger]
+)
+
+grim_corpse_rune = Rune(
+    name="Grim Corpse Rune",
+    active_effects=[effect_rune_force, effect_dark_pit],
+    passive_effects=[effect_death_will_arrive]
+)
+
 
 # Characters
 chr_red_slime = Character(
@@ -331,7 +415,7 @@ chr_red_slime = Character(
     defense=2,
     speed=1,
     description="""
-        A sentient collection of magical liquid. 
+        A sentient collection of magical liquid.
     """
 )
 
@@ -343,7 +427,7 @@ chr_red_magic_slime = Character(
     defense=2,
     speed=1,
     description="""
-        A sentient collection of magical liquid. 
+        A sentient collection of magical liquid.
     """,
     runes=[fire_rune]
 )
@@ -356,7 +440,7 @@ chr_blue_slime = Character(
     defense=2,
     speed=1,
     description="""
-        A sentient collection of magical liquid. 
+        A sentient collection of magical liquid.
     """
 )
 
@@ -368,7 +452,7 @@ chr_blue_magic_slime = Character(
     defense=2,
     speed=1,
     description="""
-        A sentient collection of magical liquid. 
+        A sentient collection of magical liquid.
     """,
     runes=[water_rune]
 )
@@ -381,7 +465,7 @@ chr_green_slime = Character(
     defense=2,
     speed=1,
     description="""
-        A sentient collection of magical liquid. 
+        A sentient collection of magical liquid.
     """
 )
 
@@ -393,7 +477,7 @@ chr_green_magic_slime = Character(
     defense=2,
     speed=1,
     description="""
-        A sentient collection of magical liquid. 
+        A sentient collection of magical liquid.
     """,
     runes=[wind_rune]
 )
@@ -433,16 +517,16 @@ chr_azelgram = Character(
     attack=10,
     defense=10,
     speed=10,
-    runes=[],
+    runes=[purple_power_rune, grim_corpse_rune],
     description="""
         Azelgram, The Devourer of Spirits, The Demon of Belief, The Fireborn Horror.
         A demon of pure evil. A being created from supernatural.
         Which is led by humanity's sole belief that demon's truly exist in this world.
-        Azelgram is a demon that feeds on the souls of the living. 
+        Azelgram is a demon that feeds on the souls of the living.
         He gained their memories, their knowledge, their power, and their essence.
         He learnt everything about the world. Including the supernatural.
         He is a being of pure darkness and malice.
-        After enough souls, he grew wings made of an eldritch horror.      
+        After enough souls, he grew wings made of an eldritch horror.
     """
 )
 

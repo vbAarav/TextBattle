@@ -7,7 +7,7 @@ class BaseItem:
         self.description = description
         self.effect = effect
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return f"{self.name}: {self.description}"
 
 
@@ -17,7 +17,7 @@ class Item:
         self.name = item.name
         self.quantity = quantity
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return f"{self.item.name} (x{self.quantity})"
 
 
