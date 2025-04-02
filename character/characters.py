@@ -6,12 +6,13 @@ from enum import Enum, auto
 
 # Character Class
 class Character:
-    def __init__(self, name, max_hp, attack, defense, speed,
+    def __init__(self, name, max_hp, attack, defense, speed, race=None,
                 resistance=0, crit_chance=0.1, crit_resistance=0, crit_damage=1.5,
                 crit_shield=0, evasion=0, accuracy=0, type=None, sigils=None, status_effects=None, description=""):
         # Description
         self.name = name
         self.description = description
+        self.race = race
 
         # Properties
         self.type = Colour.NONE if type is None else type
@@ -98,11 +99,14 @@ class Character:
 
     # Character Property Manipulation Methods
     def receive_attack(self, incoming_damage, attacker, battle):
-        incoming_damage.crit_amount -= self.crit_shield.total  # Calculate Damage
-        reduction = (incoming_damage.ignore_defense * self.defense.total) * \
-            ((self.resistance.total/100) + 1)  # Calculate Resistance
-        amount_damage = max(0, incoming_damage.total -
-                            reduction)  # Total Damage
+        # Trigger passive effects before receiving an attack
+        battle.trigger_effects(self, trigger="after_receive_attack", attacker=attacker)
+        time.sleep(1)
+        
+        # Calculate Damage
+        incoming_damage.crit_amount -= self.crit_shield.total  
+        reduction = (incoming_damage.ignore_defense * self.defense.total) * ((self.resistance.total/100) + 1)  # Calculate Resistance
+        amount_damage = int(math.floor(max(0, incoming_damage.total - reduction)))  # Total Damage
 
         if incoming_damage.is_crit:
             print(f"CRITICAL HIT!!!")
@@ -112,12 +116,15 @@ class Character:
         time.sleep(1)
 
         # Trigger passive effects after receiving an attack
-        battle.trigger_effects(
-            self, trigger="on_receive_attack", attacker=attacker)
+        battle.trigger_effects(self, trigger="after_receive_attack", attacker=attacker)
         time.sleep(1)
 
     def attack_target(self, target, battle):
         print(f"{self.name} attacks {target.name}!")
+        time.sleep(1)
+        
+        # Trigger passive effects before performing an attack
+        battle.trigger_effects(self, trigger="before_attack", target=target)
         time.sleep(1)
 
         # Calculate Damage
@@ -125,8 +132,8 @@ class Character:
         damage.build(self.attack.total, self, target)
         target.receive_attack(damage, self, battle)
 
-        # Trigger passive effects when performing an attack
-        battle.trigger_effects(self, trigger="on_attack", target=target)
+        # Trigger passive effects after performing an attack
+        battle.trigger_effects(self, trigger="after_attack", target=target)
         time.sleep(1)
 
     def receive_heal(self, heal_amount):
@@ -172,8 +179,6 @@ class Character:
         battle.trigger_effects(self, trigger=trigger_type, killer=source)
 
 # Damage
-
-
 class Damage:
     def __init__(self, amount=0, crit_amount=0, is_crit=False, type_amount=0, has_advantage=False, has_disadvantage=False):
         self.base_amount = amount
@@ -196,8 +201,7 @@ class Damage:
 
     @property
     def total(self):
-        total = (self.base_amount + random.uniform(0, (math.log10(self.base_amount) + 1)
-                 * 10)) * self.type_amount * self.crit_amount
+        total = (self.base_amount + random.uniform(0, (math.log10(self.base_amount) + 1)* 10)) * self.type_amount * self.crit_amount
         return int(math.floor(total))
 
 # Stats
@@ -220,12 +224,13 @@ class Stat:
         else:
             self.additive_modifiers.append(value)
 
-    def remove_modifier(self, value: float):
+    def remove_modifier(self, value: float, is_multiplicative: bool = False):
         """Removes a modifier if it exists."""
-        if value in self.additive_modifiers:
-            self.additive_modifiers.remove(value)
-        elif value in self.multiplicative_modifiers:
+        if is_multiplicative and value in self.multiplicative_modifiers:
             self.multiplicative_modifiers.remove(value)
+        elif value in self.additive_modifiers:
+            self.additive_modifiers.remove(value)
+        
 
     def clear_modifiers(self):
         """Clears all modifiers."""

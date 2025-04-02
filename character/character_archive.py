@@ -2,6 +2,17 @@ from character.characters import Character, Colour
 import magic.sigil_archive as sigil_archive
 
 # Characters
+MC_TEMPLATE = Character(
+    name="MC", 
+    type=Colour.NONE, 
+    max_hp=100,
+    attack=3,
+    defense=1,
+    speed=1,
+    sigils=[sigil_archive.POWER]
+    )
+
+
 RED_SLIME = Character(
     name="Red Slime",
     type=Colour.RED,
@@ -114,6 +125,7 @@ DEEP_SEA_SNAKE = Character(
 
 AZELGRAM = Character(
     name="Azelgram",
+    race="Demon",
     max_hp=100,
     attack=10,
     defense=10,
