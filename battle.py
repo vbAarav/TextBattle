@@ -1,6 +1,4 @@
 import time
-import effects
-
 
 class Battle:
     # Constructor

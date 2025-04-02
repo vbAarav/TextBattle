@@ -1,6 +1,5 @@
 import random
 
-
 class BaseItem:
     def __init__(self, name: str, description: str = "", effect=None):
         self.name = name
