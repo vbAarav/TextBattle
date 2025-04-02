@@ -7,11 +7,15 @@ from enum import Enum, auto
 # Character Class
 class Character:
 <<<<<<< HEAD
+<<<<<<< HEAD
     def __init__(self, name, max_hp, attack, defense, speed, race=None,
                 resistance=0, crit_chance=0.1, crit_resistance=0, crit_damage=1.5,
                 crit_shield=0, evasion=0, accuracy=0.9, type=None, sigils=None, status_effects=None, description=""):
 =======
     def __init__(self, name, max_hp, attack, defense, speed,
+=======
+    def __init__(self, name, max_hp, attack, defense, speed, race=None,
+>>>>>>> 25f2f45 (Improved the Passive Effects System)
                 resistance=0, crit_chance=0.1, crit_resistance=0, crit_damage=1.5,
                 crit_shield=0, evasion=0, accuracy=0, type=None, sigils=None, status_effects=None, description=""):
 >>>>>>> da7f2aa (Replaced Rune for Sigil)
@@ -113,6 +117,7 @@ class Character:
         battle.trigger_effects(self, trigger="after_receive_attack", attacker=attacker)
         time.sleep(1)
         
+<<<<<<< HEAD
         # Calculate if attack connects with target       
         chance_to_hit = attacker.accuracy.total - self.evasion.total 
         if (random.random() <= chance_to_hit): 
@@ -120,6 +125,12 @@ class Character:
             incoming_damage.crit_amount -= self.crit_shield.total  
             reduction = (incoming_damage.ignore_defense * self.defense.total) * ((self.resistance.total/100) + 1)  # Calculate Resistance
             amount_damage = int(math.floor(max(0, incoming_damage.total - reduction)))  # Total Damage
+=======
+        # Calculate Damage
+        incoming_damage.crit_amount -= self.crit_shield.total  
+        reduction = (incoming_damage.ignore_defense * self.defense.total) * ((self.resistance.total/100) + 1)  # Calculate Resistance
+        amount_damage = int(math.floor(max(0, incoming_damage.total - reduction)))  # Total Damage
+>>>>>>> 25f2f45 (Improved the Passive Effects System)
 
             if incoming_damage.is_crit:
                 print(f"CRITICAL HIT!!!")
@@ -129,12 +140,21 @@ class Character:
             self.take_damage(amount_damage, battle, source=attacker)
             time.sleep(1)
 
+<<<<<<< HEAD
             # Trigger passive effects after receiving an attack
             battle.trigger_effects(self, trigger="after_receive_attack", attacker=attacker)
             time.sleep(1)
         else:
             print(f"{attacker.name} missed the attack")
             time.sleep(1)
+=======
+        self.take_damage(amount_damage, battle, source=attacker)
+        time.sleep(1)
+
+        # Trigger passive effects after receiving an attack
+        battle.trigger_effects(self, trigger="after_receive_attack", attacker=attacker)
+        time.sleep(1)
+>>>>>>> 25f2f45 (Improved the Passive Effects System)
 
     def attack_target(self, target, battle):
         print(f"{self.name} attacks {target.name}!")

@@ -116,11 +116,17 @@ player = players.Player(name, location=area_atlus.LONG_PLAINS)
 # Build Character Team
 name = input("What is your character's name: ")
 <<<<<<< HEAD
+<<<<<<< HEAD
 character = character_archive.MC_TEMPLATE
 character.name = name
 character.type = characters.Colour.random_type()
 =======
 >>>>>>> da7f2aa (Replaced Rune for Sigil)
+=======
+character = character_archive.MC_TEMPLATE
+character.name = name
+character.type = characters.Colour.random_type()
+>>>>>>> 25f2f45 (Improved the Passive Effects System)
 character = characters.Character(name, max_hp=100, attack=3, defense=1, speed=1, type=characters.Colour.random_type(), sigils=[sigil_archive.POWER])
 player.characters.append(character)
 
