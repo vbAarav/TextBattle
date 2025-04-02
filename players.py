@@ -54,7 +54,7 @@ class Enemy(Player):
         super().__init__("Enemy", characters)
 
     def get_input(self, message, valid_choices):
-        choice = random.choice(valid_choices)
+        choice = random.choices(valid_choices, weights=[int(choice) for choice in valid_choices], k=1)[0]
         time.sleep(1)
         return choice
 
