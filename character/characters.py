@@ -5,12 +5,10 @@ import random
 from enum import Enum, auto
 
 # Character Class
-
-
 class Character:
     def __init__(self, name, max_hp, attack, defense, speed,
-                 resistance=0, crit_chance=0.1, crit_resistatnce=0, crit_damage=1.5, crit_shield=0, evasion=0, accuracy=0,
-                 type=None, runes=None, status_effects=None, description=""):
+                resistance=0, crit_chance=0.1, crit_resistatnce=0, crit_damage=1.5,
+                crit_shield=0, evasion=0, accuracy=0, type=None, runes=None, status_effects=None, description=""):
         # Description
         self.name = name
         self.description = description
@@ -59,10 +57,37 @@ class Character:
         if len(self.status_effects) > 0:
             toReturn += f" Statuses: {self.status_effects}"
         return toReturn
+    
+    def display_details(self):
+        print(f"{self.name}")
+        if self.description != "":
+            print(f"    {self.description}")
+        print(f"    Type: {self.type}")
+        print(f"    HP: {self.max_hp.resource_value}/{self.max_hp.total}")
+        print(f"    ATK: {self.attack.total}")
+        print(f"    DEF: {self.defense.total}")
+        print(f"    SPD: {self.speed.total}")
+        print(f"    RES: {self.resistance.total}")
+        print(f"    CC: {self.crit_chance.total * 100:.0f}%")
+        print(f"    CR: {self.crit_resistance.total * 100:.0f}%")
+        print(f"    CD: {self.crit_damage.total * 100:.0f}%")
+        print(f"    CS: {self.crit_shield.total * 100:.0f}%")
+        print(f"    EV: {self.evasion.total * 100:.0f}%")
+        print(f"    ACC: {self.accuracy.total * 100:.0f}%")
 
-    def equip_rune(self, rune):
-        self.runes.append(rune)
-        rune.equipped_character = self
+        print(f"\nRunes:")
+        for rune in self.runes:
+            print(f"    {rune.name}", end="")
+            if rune.description != "":
+                print(f" - {rune.description}", end="")
+            print("")
+            for effect in rune.active_effects:
+                print(f"        (Active) {effect.name} - {effect.description}")
+            for effect in rune.passive_effects:
+                print(f"        (Passive) {effect.name} - {effect.description}")
+        
+        print("")
+
 
     # Character State Methods
     def is_alive(self):
@@ -119,6 +144,10 @@ class Character:
     def clear_stat_modifiers(self):
         for stat in self.all_stats():
             stat.clear_modifiers()
+
+    def equip_rune(self, rune):
+        self.runes.append(rune)
+        rune.equipped_character = self
 
     # Rune Methods
     def activate_active_effect(self, rune, effect, battle):

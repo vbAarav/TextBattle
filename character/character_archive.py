@@ -9,8 +9,9 @@ RED_SLIME = Character(
     attack=2,
     defense=2,
     speed=1,
-    description="""
-        A sentient collection of magical liquid.
+    description=
+    """
+    A sentient collection of magical liquid.
     """
 )
 
@@ -21,8 +22,9 @@ RED_MAGIC_SLIME = Character(
     attack=3,
     defense=2,
     speed=1,
-    description="""
-        A sentient collection of magical liquid.
+    description=
+    """
+    A sentient collection of magical liquid.
     """,
     runes=[rune_archive.FIRE]
 )
@@ -34,8 +36,9 @@ BLUE_SLIME = Character(
     attack=2,
     defense=2,
     speed=1,
-    description="""
-        A sentient collection of magical liquid.
+    description=
+    """
+    A sentient collection of magical liquid.
     """
 )
 
@@ -46,8 +49,9 @@ BLUE_MAGIC_SLIME = Character(
     attack=3,
     defense=2,
     speed=1,
-    description="""
-        A sentient collection of magical liquid.
+    description=
+    """
+    A sentient collection of magical liquid.
     """,
     runes=[rune_archive.WATER]
 )
@@ -59,8 +63,9 @@ GREEN_SLIME = Character(
     attack=2,
     defense=2,
     speed=1,
-    description="""
-        A sentient collection of magical liquid.
+    description=
+    """
+    A sentient collection of magical liquid.
     """
 )
 
@@ -71,8 +76,9 @@ GREEN_MAGIC_SLIME = Character(
     attack=3,
     defense=2,
     speed=1,
-    description="""
-        A sentient collection of magical liquid.
+    description=
+    """
+    A sentient collection of magical liquid.
     """,
     runes=[rune_archive.WIND]
 )
@@ -113,14 +119,15 @@ AZELGRAM = Character(
     defense=10,
     speed=10,
     runes=[rune_archive.PURPLE_POWER, rune_archive.GRIM_CORPSE],
-    description="""
-        Azelgram, The Devourer of Spirits, The Demon of Belief, The Fireborn Horror.
-        A demon of pure evil. A being created from supernatural.
-        Which is led by humanity's sole belief that demon's truly exist in this world.
-        Azelgram is a demon that feeds on the souls of the living.
-        He gained their memories, their knowledge, their power, and their essence.
-        He learnt everything about the world. Including the supernatural.
-        He is a being of pure darkness and malice.
-        After enough souls, he grew wings made of an eldritch horror.
+    description=
+    """
+    Azelgram, The Devourer of Spirits, The Demon of Belief, The Fireborn Horror.
+    A demon of pure evil. A being created from supernatural.
+    Which is led by humanity's sole belief that demon's truly exist in this world.
+    Azelgram is a demon that feeds on the souls of the living.
+    He gained their memories, their knowledge, their power, and their essence.
+    He learnt everything about the world. Including the supernatural.
+    He is a being of pure darkness and malice.
+    After enough souls, he grew wings made of an eldritch horror.
     """
 )
