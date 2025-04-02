@@ -2,6 +2,8 @@ import random
 import time
 
 # Effect Classes
+
+
 class Effect:
     def __init__(self, name, description=""):
         self.name = name
@@ -50,14 +52,15 @@ class PassiveEffect(Effect):
     def __repr__(self):
         return f"PassiveEffect({self.name})"
 
+
 class StatusEffect(Effect):
     def __init__(self, name, description="", duration=1, apply_effect=None, ongoing_effect=None, trigger_condition=None):
         super().__init__(name, description)
         self.duration = duration
         self.apply_effect = apply_effect
-        self.ongoing_effect = ongoing_effect    
+        self.ongoing_effect = ongoing_effect
         self.trigger_condition = trigger_condition
-        
+
     def check_and_apply(self, character, battle, **kwargs):
         """Checks if the condition is met and applies the effect if so."""
         if self.trigger_condition and self.trigger_condition(character, battle, **kwargs):
@@ -66,62 +69,70 @@ class StatusEffect(Effect):
     def apply(self, character, battle):
         if self.apply_effect:
             self.apply_effect(character, battle)
-        
+
     def update_effect(self, character, battle, **kwargs):
         if self.ongoing_effect:
             if self.trigger_condition and self.trigger_condition(character, battle, **kwargs):
                 self.ongoing_effect(character, battle)
         self.decrement_duration(character)
-        
+
     def decrement_duration(self, character):
         self.duration -= 1
-        if self.duration <= 0:  
+        if self.duration <= 0:
             character.status_effects.remove(self)
             print(f"{character.name} is no longer affected by {self.name}.")
-        
 
     def __repr__(self):
         return f"{self.name}: {self.duration}"
 
 
 # Trigger Conditions
+# At the start of battle
 def trigger_on_start_of_battle(character, battle, **kwargs):
     return kwargs.get("trigger") == "on_start_of_battle"
 
-def trigger_on_start_of_turn(character, battle, **kwargs):
+
+def trigger_on_start_of_turn(character, battle, **kwargs):  # At the start of turn
     return kwargs.get("trigger") == "on_start_of_turn"
 
+
+# At the start of your turn
 def trigger_on_start_of_character_turn(character, battle, **kwargs):
     return kwargs.get("trigger") == "on_start_of_character_turn"
 
 
+# After receiving an attack
 def trigger_on_receive_attack(character, battle, **kwargs):
     return kwargs.get("trigger") == "on_receive_attack"
 
 
-def trigger_on_attack(character, battle, **kwargs):
+def trigger_on_attack(character, battle, **kwargs):  # After executing an attack
     return kwargs.get("trigger") == "on_attack"
 
 
-def trigger_on_turn_x(x):
+def trigger_on_turn_x(x):  # At the start of turn (X)
     return lambda character, battle, **kwargs: kwargs.get("trigger") == "on_turn" and kwargs.get("turn") == x
 
 
-def trigger_within_first_x_turns(x):
+def trigger_within_first_x_turns(x):  # For the first (X) turns
     return lambda character, battle, **kwargs: kwargs.get("trigger") == "on_turn" and kwargs.get("turn") <= x
 
 
+# After dying by an ally's attack
 def trigger_on_death_by_ally(character, battle, **kwargs):
     return kwargs.get("trigger") == "on_death_by_ally"
 
 
+# After dying by an enemy's attack
 def trigger_on_death_by_enemy(character, battle, **kwargs):
     return kwargs.get("trigger") == "on_death_by_enemy"
 
 
+# When (STAT) is (CONDITION) (THRESHOLD)
 def trigger_on_stat_threshold(condition):
     return lambda character, battle, **kwargs: condition(character)
 
 
+# If an ally with the name (NAME) is present
 def trigger_if_ally_present(name):
     return lambda character, battle, **kwargs: any(ally.name == name for ally in battle.get_character_allies(character))

@@ -1,4 +1,4 @@
-import runes
+import magic.runes as runes
 import time
 import math
 import random

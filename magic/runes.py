@@ -1,4 +1,3 @@
-import effects
 
 class Rune:
     def __init__(self, name, description="", active_effects=[], passive_effects=[], equipped_character=None):

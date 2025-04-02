@@ -1,12 +1,12 @@
-import random
+
 import time
-import characters
-import battle
-import runes
-import effects
+import character.characters as characters
+import magic.runes as runes
 import players
-import data
-import map
+import map.location as location
+import map.area_atlus as area_atlus
+import character.character_archive as character_archive
+import magic.rune_archive as rune_archive
 
 
 def play_intro():
@@ -63,7 +63,7 @@ def play_intro():
 class Game:
     def __init__(self, player):
         self.player = player
-        self.map = map.Map()
+        self.map = location.Map()
         self.map.add_area(self.player.location)
 
     def start_game(self):
@@ -110,14 +110,14 @@ class Game:
 
 
 name = input("What is your name: ")
-player = players.Player(name, location=data.area_long_plains)
+player = players.Player(name, location=area_atlus.LONG_PLAINS)
 
 # Choose a character
 name = input("What is your character's name: ")
 character = characters.Character(name, max_hp=100, attack=3, defense=1,
-                                 speed=1, type=characters.Colour.random_type(), runes=[data.power_rune])
+                                 speed=1, type=characters.Colour.random_type(), runes=[rune_archive.POWER])
 player.characters.append(character)
-player.characters.append(data.chr_azelgram)
+player.characters.append(character_archive.AZELGRAM)
 print(f"{character.name} has entered the world!\n")
 time.sleep(1)
 
