@@ -58,11 +58,18 @@ class Battle:
         for effect in character.status_effects:
             effect.check(character, self, **kwargs, trigger=trigger)
 
+<<<<<<< HEAD
         # Rune Effects
         for rune in character.runes:
             for effect in rune.passive_effects:
                 effect.check_and_apply(
                     character, self, **kwargs, trigger=trigger)
+=======
+        # Sigil Effects
+        for sigil in character.sigils:
+            for effect in sigil.passive_effects:
+                effect.check(character, self, **kwargs, trigger=trigger)
+>>>>>>> 25f2f45 (Improved the Passive Effects System)
 
     def display_battle_status(self):
         print(self)
@@ -93,10 +100,25 @@ class Battle:
                     break
                 if not character.is_alive():
                     continue
+<<<<<<< HEAD
                 
                 self.next_turn(character)
                 character.action_points.clear_modifiers()
                 character.action_points.base_value = 0
+=======
+
+                # Trigger Start of Turn Effects
+                self.turn += 1 # Start of Turn
+                self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
+                self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
+                for chr in self.get_all_characters():
+                    self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)
+
+                time.sleep(1)
+                self.display_battle_status()  # Display Battle Status
+                self.choose_action(character)  # Choose Action
+
+>>>>>>> 25f2f45 (Improved the Passive Effects System)
         self.end_battle()
 
     def end_battle(self):
