@@ -50,9 +50,9 @@ class Battle:
         for effect in character.status_effects:
             effect.update_effect(character, self, **kwargs, trigger=trigger)
 
-        # Rune Effects
-        for rune in character.runes:
-            for effect in rune.passive_effects:
+        # Sigil Effects
+        for sigil in character.sigils:
+            for effect in sigil.passive_effects:
                 effect.check_and_apply(
                     character, self, **kwargs, trigger=trigger)
 
@@ -112,13 +112,13 @@ class Battle:
     def choose_action(self, character):
         print(f"\n{character.name}'s turn!")
         print("1. Attack")
-        print("2. Rune" if len(
-            [effect for runes in character.runes for effect in runes.active_effects]) > 0 else "")
+        print("2. Sigil" if len(
+            [effect for sigils in character.sigils for effect in sigils.active_effects]) > 0 else "")
 
         # Choose Action
         choices = ["1"]
         choices.append("2") if len(
-            [effect for runes in character.runes for effect in runes.active_effects]) > 0 else None
+            [effect for sigils in character.sigils for effect in sigils.active_effects]) > 0 else None
         choice = self.get_player(character).get_input(
             "Choose an action: ", choices)
         valid_choice = False
@@ -128,8 +128,8 @@ class Battle:
             if choice == "1":
                 valid_choice = self.attack_action(character)
 
-            elif choice == "2" and len([effect for runes in character.runes for effect in runes.active_effects]) > 0:
-                valid_choice = self.use_rune_action(character)
+            elif choice == "2" and len([effect for sigils in character.sigils for effect in sigils.active_effects]) > 0:
+                valid_choice = self.use_sigil_action(character)
 
             else:
                 print("Invalid action!")
@@ -143,12 +143,12 @@ class Battle:
         else:
             return False
 
-    def use_rune_action(self, character):
-        rune = self.choose_rune(character)
-        if rune:
-            active_effect = self.choose_active_effect(rune)
+    def use_sigil_action(self, character):
+        sigil = self.choose_sigil(character)
+        if sigil:
+            active_effect = self.choose_active_effect(sigil)
             if active_effect:
-                character.activate_active_effect(rune, active_effect, self)
+                character.activate_active_effect(sigil, active_effect, self)
                 return True
             else:
                 return False
@@ -175,39 +175,39 @@ class Battle:
         print("Invalid choice!")
         return None
 
-    def choose_rune(self, character):
-        if character.runes:
-            print("\nChoose a rune:")
+    def choose_sigil(self, character):
+        if character.sigils:
+            print("\nChoose a sigil:")
             time.sleep(1)
 
-            for i, rune in enumerate(character.runes):
-                print(f"{i+1}. {rune.name}: {rune.description}")
+            for i, sigil in enumerate(character.sigils):
+                print(f"{i+1}. {sigil.name}: {sigil.description}")
 
             time.sleep(1)
-            choice = self.get_player(character).get_input("Enter rune number: ", [
-                str(i+1) for i in range(len(character.runes))])
+            choice = self.get_player(character).get_input("Enter sigil number: ", [
+                str(i+1) for i in range(len(character.sigils))])
             if choice.isdigit():
                 index = int(choice) - 1
-                if 0 <= index < len(character.runes):
-                    return character.runes[index]
+                if 0 <= index < len(character.sigils):
+                    return character.sigils[index]
             print("Invalid choice!")
             return None
         return None
 
-    def choose_active_effect(self, rune):
-        if rune.active_effects:
+    def choose_active_effect(self, sigil):
+        if sigil.active_effects:
             print("\nChoose an active effect:")
             time.sleep(1)
-            for i, effect in enumerate(rune.active_effects):
+            for i, effect in enumerate(sigil.active_effects):
                 print(f"{i+1}. {effect.name}: {effect.description}")
 
             time.sleep(1)
-            choice = self.get_player(rune.equipped_character).get_input(
-                "Enter effect number: ", [str(i+1) for i in range(len(rune.active_effects))])
+            choice = self.get_player(sigil.equipped_character).get_input(
+                "Enter effect number: ", [str(i+1) for i in range(len(sigil.active_effects))])
             if choice.isdigit():
                 index = int(choice) - 1
-                if 0 <= index < len(rune.active_effects):
-                    return rune.active_effects[index]
+                if 0 <= index < len(sigil.active_effects):
+                    return sigil.active_effects[index]
             print("Invalid choice!")
             return None
         return None

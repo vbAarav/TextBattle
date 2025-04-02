@@ -87,8 +87,7 @@ class StatusEffect(Effect):
 
 
 # Trigger Conditions
-# At the start of battle
-def trigger_on_start_of_battle(character, battle, **kwargs):
+def trigger_on_start_of_battle(character, battle, **kwargs): # At the start of battle
     return kwargs.get("trigger") == "on_start_of_battle"
 
 
@@ -96,13 +95,11 @@ def trigger_on_start_of_turn(character, battle, **kwargs):  # At the start of tu
     return kwargs.get("trigger") == "on_start_of_turn"
 
 
-# At the start of your turn
-def trigger_on_start_of_character_turn(character, battle, **kwargs):
+def trigger_on_start_of_character_turn(character, battle, **kwargs): # At the start of your turn
     return kwargs.get("trigger") == "on_start_of_character_turn"
 
 
-# After receiving an attack
-def trigger_on_receive_attack(character, battle, **kwargs):
+def trigger_on_receive_attack(character, battle, **kwargs): # After receiving an attack
     return kwargs.get("trigger") == "on_receive_attack"
 
 
@@ -118,21 +115,20 @@ def trigger_within_first_x_turns(x):  # For the first (X) turns
     return lambda character, battle, **kwargs: kwargs.get("trigger") == "on_turn" and kwargs.get("turn") <= x
 
 
-# After dying by an ally's attack
-def trigger_on_death_by_ally(character, battle, **kwargs):
+
+def trigger_on_death_by_ally(character, battle, **kwargs): # After dying by an ally's attack
     return kwargs.get("trigger") == "on_death_by_ally"
 
 
-# After dying by an enemy's attack
-def trigger_on_death_by_enemy(character, battle, **kwargs):
+
+def trigger_on_death_by_enemy(character, battle, **kwargs): # After dying by an enemy's attack
     return kwargs.get("trigger") == "on_death_by_enemy"
 
 
-# When (STAT) is (CONDITION) (THRESHOLD)
-def trigger_on_stat_threshold(condition):
+
+def trigger_on_stat_threshold(condition): # When (STAT) is (CONDITION) (THRESHOLD)
     return lambda character, battle, **kwargs: condition(character)
 
 
-# If an ally with the name (NAME) is present
-def trigger_if_ally_present(name):
+def trigger_if_ally_present(name): # If an ally with the name (NAME) is present
     return lambda character, battle, **kwargs: any(ally.name == name for ally in battle.get_character_allies(character))

@@ -1,12 +1,12 @@
 
 import time
 import character.characters as characters
-import magic.runes as runes
+import magic.sigils as sigils
 import players
 import map.location as location
 import map.area_atlus as area_atlus
 import character.character_archive as character_archive
-import magic.rune_archive as rune_archive
+import magic.sigil_archive as sigil_archive
 
 
 def play_intro():
@@ -115,7 +115,7 @@ player = players.Player(name, location=area_atlus.LONG_PLAINS)
 
 # Build Character Team
 name = input("What is your character's name: ")
-character = characters.Character(name, max_hp=100, attack=3, defense=1, speed=1, type=characters.Colour.random_type(), runes=[rune_archive.POWER])
+character = characters.Character(name, max_hp=100, attack=3, defense=1, speed=1, type=characters.Colour.random_type(), sigils=[sigil_archive.POWER])
 player.characters.append(character)
 
 print("Choose a team member to join you")

@@ -1,5 +1,5 @@
 from character.characters import Character, Colour
-import magic.rune_archive as rune_archive
+import magic.sigil_archive as sigil_archive
 
 # Characters
 RED_SLIME = Character(
@@ -26,7 +26,7 @@ RED_MAGIC_SLIME = Character(
     """
     A sentient collection of magical liquid.
     """,
-    runes=[rune_archive.FIRE]
+    sigils=[sigil_archive.FIRE]
 )
 
 BLUE_SLIME = Character(
@@ -53,7 +53,7 @@ BLUE_MAGIC_SLIME = Character(
     """
     A sentient collection of magical liquid.
     """,
-    runes=[rune_archive.WATER]
+    sigils=[sigil_archive.WATER]
 )
 
 GREEN_SLIME = Character(
@@ -80,7 +80,7 @@ GREEN_MAGIC_SLIME = Character(
     """
     A sentient collection of magical liquid.
     """,
-    runes=[rune_archive.WIND]
+    sigils=[sigil_archive.WIND]
 )
 
 ROCK_GOLEM = Character(
@@ -89,7 +89,7 @@ ROCK_GOLEM = Character(
     attack=6,
     defense=10,
     speed=10,
-    runes=[rune_archive.ROCK]
+    sigils=[sigil_archive.ROCK]
 )
 
 STORM_HAWK = Character(
@@ -99,7 +99,7 @@ STORM_HAWK = Character(
     attack=5,
     defense=3,
     speed=8,
-    runes=[rune_archive.BLUE_LIGHTNING]
+    sigils=[sigil_archive.BLUE_LIGHTNING]
 )
 
 DEEP_SEA_SNAKE = Character(
@@ -109,7 +109,7 @@ DEEP_SEA_SNAKE = Character(
     attack=7,
     defense=5,
     speed=3,
-    runes=[rune_archive.WATER]
+    sigils=[sigil_archive.WATER]
 )
 
 AZELGRAM = Character(
@@ -118,7 +118,7 @@ AZELGRAM = Character(
     attack=10,
     defense=10,
     speed=10,
-    runes=[rune_archive.PURPLE_POWER, rune_archive.GRIM_CORPSE],
+    sigils=[sigil_archive.PURPLE_POWER, sigil_archive.GRIM_CORPSE],
     description=
     """
     Azelgram, The Devourer of Spirits, The Demon of Belief, The Fireborn Horror.

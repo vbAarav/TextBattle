@@ -1,4 +1,4 @@
-from magic.runes import Rune
+from magic.sigils import Sigil
 from effect.effects import StatusEffect
 import effect.effects as effects
 
