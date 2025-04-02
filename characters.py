@@ -68,6 +68,9 @@ class Character:
     def is_alive(self):
         return self.max_hp.resource_value > 0
 
+    def all_stats(self):
+        return [self.max_hp, self.attack, self.defense, self.speed, self.resistance, self.crit_chance, self.crit_resistance, self.crit_damage, self.crit_shield, self.evasion, self.accuracy]
+
     # Character Property Manipulation Methods
     def receive_attack(self, incoming_damage, attacker, battle):
         incoming_damage.crit_amount -= self.crit_shield.total  # Calculate Damage
@@ -112,6 +115,10 @@ class Character:
             self.status_effects.append(status_effect)
             print(f"{self.name} is now affected by {status_effect.name}.")
             time.sleep(1)
+
+    def clear_stat_modifiers(self):
+        for stat in self.all_stats():
+            stat.clear_modifiers()
 
     # Rune Methods
     def activate_active_effect(self, rune, effect, battle):
@@ -190,6 +197,11 @@ class Stat:
             self.additive_modifiers.remove(value)
         elif value in self.multiplicative_modifiers:
             self.multiplicative_modifiers.remove(value)
+
+    def clear_modifiers(self):
+        """Clears all modifiers."""
+        self.additive_modifiers.clear()
+        self.multiplicative_modifiers.clear()
 
     @property
     def total(self):

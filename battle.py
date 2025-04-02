@@ -101,6 +101,8 @@ class Battle:
 
     def end_battle(self):
         # End of battle
+        for character in self.get_all_characters():
+            character.clear_stat_modifiers()
         if any(c.is_alive() for c in self.playerOne.characters):
             print(f"{self.playerOne} wins!")
             self.winner = self.playerOne
@@ -109,7 +111,6 @@ class Battle:
             self.winner = self.playerTwo
 
     # Choose an Action
-
     def choose_action(self, character):
         print(f"\n{character.name}'s turn!")
         print("1. Attack")
@@ -136,7 +137,6 @@ class Battle:
                 print("Invalid action!")
 
     # All Action Types
-
     def attack_action(self, character):
         target = self.choose_target(self.get_all_characters(), character)
         if target:
