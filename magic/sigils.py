@@ -1,5 +1,5 @@
 
-class Rune:
+class Sigil:
     def __init__(self, name, description="", active_effects=[], passive_effects=[], equipped_character=None):
         self.name = name
         self.description = description
@@ -14,6 +14,6 @@ class Rune:
         self.passive_effects.append(passive_effect)
 
     def __repr__(self):
-        return f"Rune({self.name}, ActiveEffects: {len(self.active_effects)}, PassiveEffects: {len(self.passive_effects)})"
+        return f"Sigil({self.name}, ActiveEffects: {len(self.active_effects)}, PassiveEffects: {len(self.passive_effects)})"
 
 

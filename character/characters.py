@@ -1,4 +1,4 @@
-import magic.runes as runes
+import magic.sigils as sigils
 import time
 import math
 import random
@@ -7,8 +7,8 @@ from enum import Enum, auto
 # Character Class
 class Character:
     def __init__(self, name, max_hp, attack, defense, speed,
-                resistance=0, crit_chance=0.1, crit_resistatnce=0, crit_damage=1.5,
-                crit_shield=0, evasion=0, accuracy=0, type=None, runes=None, status_effects=None, description=""):
+                resistance=0, crit_chance=0.1, crit_resistance=0, crit_damage=1.5,
+                crit_shield=0, evasion=0, accuracy=0, type=None, sigils=None, status_effects=None, description=""):
         # Description
         self.name = name
         self.description = description
@@ -24,7 +24,7 @@ class Character:
 
         self.resistance = Stat(resistance, name="RES", is_natural=False)
         self.crit_chance = Stat(crit_chance, name="CC", is_float=True)
-        self.crit_resistance = Stat(crit_resistatnce, name="CR", is_float=True)
+        self.crit_resistance = Stat(crit_resistance, name="CR", is_float=True)
         self.crit_damage = Stat(crit_damage, name="CD", is_float=True)
         self.crit_shield = Stat(crit_shield, name="CS", is_float=True)
 
@@ -33,9 +33,9 @@ class Character:
 
         # Belongings
         self.items = []
-        self.runes = runes if runes is not None else []
-        for rune in self.runes:
-            rune.equipped_character = self
+        self.sigils = sigils if sigils is not None else []
+        for sigil in self.sigils:
+            sigil.equipped_character = self
 
         # Status Effects
         self.status_effects = status_effects if status_effects is not None else []
@@ -75,15 +75,15 @@ class Character:
         print(f"    EV: {self.evasion.total * 100:.0f}%")
         print(f"    ACC: {self.accuracy.total * 100:.0f}%")
 
-        print(f"\nRunes:")
-        for rune in self.runes:
-            print(f"    {rune.name}", end="")
-            if rune.description != "":
-                print(f" - {rune.description}", end="")
+        print(f"\nSigils:")
+        for sigil in self.sigils:
+            print(f"    {sigil.name}", end="")
+            if sigil.description != "":
+                print(f" - {sigil.description}", end="")
             print("")
-            for effect in rune.active_effects:
+            for effect in sigil.active_effects:
                 print(f"        (Active) {effect.name} - {effect.description}")
-            for effect in rune.passive_effects:
+            for effect in sigil.passive_effects:
                 print(f"        (Passive) {effect.name} - {effect.description}")
         
         print("")
@@ -145,14 +145,14 @@ class Character:
         for stat in self.all_stats():
             stat.clear_modifiers()
 
-    def equip_rune(self, rune):
-        self.runes.append(rune)
-        rune.equipped_character = self
+    def equip_sigil(self, sigil):
+        self.sigils.append(sigil)
+        sigil.equipped_character = self
 
-    # Rune Methods
-    def activate_active_effect(self, rune, effect, battle):
-        if rune in self.runes:
-            if effect in rune.active_effects:
+    # Sigil Methods
+    def activate_active_effect(self, sigil, effect, battle):
+        if sigil in self.sigils:
+            if effect in sigil.active_effects:
                 effect.apply(self, battle)
 
     # Stat Changes
