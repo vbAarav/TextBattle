@@ -53,8 +53,7 @@ class Battle:
         # Sigil Effects
         for sigil in character.sigils:
             for effect in sigil.passive_effects:
-                effect.check_and_apply(
-                    character, self, **kwargs, trigger=trigger)
+                effect.check(character, self, **kwargs, trigger=trigger)
 
     def display_battle_status(self):
         print(self)
@@ -81,15 +80,12 @@ class Battle:
                 if not character.is_alive():
                     continue
 
-                # Start of Turn
-                self.turn += 1
-
                 # Trigger Start of Turn Effects
-                self.trigger_effects(
-                    character, trigger="on_start_of_character_turn", turn=self.turn)
+                self.turn += 1 # Start of Turn
+                self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
+                self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
                 for chr in self.get_all_characters():
-                    self.trigger_effects(
-                        chr, trigger="on_start_of_turn", turn=self.turn)
+                    self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)
 
                 time.sleep(1)
                 self.display_battle_status()  # Display Battle Status
