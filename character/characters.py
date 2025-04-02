@@ -6,9 +6,15 @@ from enum import Enum, auto
 
 # Character Class
 class Character:
+<<<<<<< HEAD
     def __init__(self, name, max_hp, attack, defense, speed, race=None,
                 resistance=0, crit_chance=0.1, crit_resistance=0, crit_damage=1.5,
                 crit_shield=0, evasion=0, accuracy=0.9, type=None, sigils=None, status_effects=None, description=""):
+=======
+    def __init__(self, name, max_hp, attack, defense, speed,
+                resistance=0, crit_chance=0.1, crit_resistance=0, crit_damage=1.5,
+                crit_shield=0, evasion=0, accuracy=0, type=None, sigils=None, status_effects=None, description=""):
+>>>>>>> da7f2aa (Replaced Rune for Sigil)
         # Description
         self.name = name
         self.description = description

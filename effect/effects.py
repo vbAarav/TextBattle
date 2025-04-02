@@ -82,16 +82,44 @@ def trigger_on_start_of_character_turn(character, battle, **kwargs): # At the st
     return kwargs.get("trigger") == "on_start_of_character_turn"
 
 
+<<<<<<< HEAD
 # Death Triggers
+=======
+def trigger_on_receive_attack(character, battle, **kwargs): # After receiving an attack
+    return kwargs.get("trigger") == "on_receive_attack"
+
+
+def trigger_on_attack(character, battle, **kwargs):  # After executing an attack
+    return kwargs.get("trigger") == "on_attack"
+
+
+def trigger_on_turn_x(x):  # At the start of turn (X)
+    return lambda character, battle, **kwargs: kwargs.get("trigger") == "on_turn" and kwargs.get("turn") == x
+
+
+def trigger_within_first_x_turns(x):  # For the first (X) turns
+    return lambda character, battle, **kwargs: kwargs.get("trigger") == "on_turn" and kwargs.get("turn") <= x
+
+
+
+>>>>>>> da7f2aa (Replaced Rune for Sigil)
 def trigger_on_death_by_ally(character, battle, **kwargs): # After dying by an ally's attack
     return kwargs.get("trigger") == "on_death_by_ally"
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> da7f2aa (Replaced Rune for Sigil)
 def trigger_on_death_by_enemy(character, battle, **kwargs): # After dying by an enemy's attack
     return kwargs.get("trigger") == "on_death_by_enemy"
 
 
+<<<<<<< HEAD
 # Stat Triggers
+=======
+
+>>>>>>> da7f2aa (Replaced Rune for Sigil)
 def trigger_on_stat_threshold(condition): # When (STAT) is (CONDITION) (THRESHOLD)
     return lambda character, battle, **kwargs: condition(character)
 
