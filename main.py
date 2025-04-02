@@ -79,7 +79,7 @@ class Game:
         print("5. Quit")
 
         choice = self.player.get_input(
-            "Choose an action: ", ["1", "2", "3", "4"])
+            "Choose an action: ", ["1", "2", "3", "4", "5"])
 
         if choice == "1":
             new_location = self.map.find_new_location(
@@ -95,13 +95,14 @@ class Game:
             self.in_world()
 
         elif choice == "3":
-            print(self.player.characters)
+            self.player.view_characters()
             self.in_world()
 
         elif choice == "4":
-            print(self.player.inventory)
+            self.player.view_inventory()
             self.in_world()
-
+        elif choice == "5":
+            print("Thanks for playing!")
         else:
             return False
 
@@ -112,15 +113,17 @@ class Game:
 name = input("What is your name: ")
 player = players.Player(name, location=area_atlus.LONG_PLAINS)
 
-# Choose a character
+# Build Character Team
 name = input("What is your character's name: ")
-character = characters.Character(name, max_hp=100, attack=3, defense=1,
-                                 speed=1, type=characters.Colour.random_type(), runes=[rune_archive.POWER])
+character = characters.Character(name, max_hp=100, attack=3, defense=1, speed=1, type=characters.Colour.random_type(), runes=[rune_archive.POWER])
 player.characters.append(character)
+
+print("Choose a team member to join you")
+ipt = input("1. Azelgram\n")
 player.characters.append(character_archive.AZELGRAM)
-print(f"{character.name} has entered the world!\n")
-time.sleep(1)
 
 # Game Loop
+print(f"{character.name} has entered the world!\n")
+time.sleep(1)
 game = Game(player)
 game.start_game()

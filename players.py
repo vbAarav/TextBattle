@@ -9,6 +9,27 @@ class Player:
         self.location = location
         self.inventory = [] if inventory is None else inventory
 
+    def __repr__(self):
+        toReturn = f"{self.name}"
+        return toReturn
+    
+    def view_characters(self):
+        print("\n" + (" " * 35) + "Characters")
+        print("-" * 80)
+        for character in self.characters:
+            character.display_details()            
+        print("-" * 80, end="\n")
+
+    def view_inventory(self):
+        print("\n" + (" " * 35) + "Inventory")
+        print("-" * 80)
+        if self.inventory == []:
+            print("Inventory is empty.")
+        else:
+            for item in self.inventory:
+                print(item)
+        print("-" * 80, end="\n")
+
     def get_input(self, message, valid_choices):
         choice = input(message).strip()
         while choice not in valid_choices:
@@ -18,11 +39,7 @@ class Player:
         return choice
 
     def travel_to(self, location):
-        self.location = location
-
-    def __repr__(self):
-        toReturn = f"{self.name}"
-        return toReturn
+        self.location = location    
 
     def add_inventory_item(self, item):
         self.inventory.append(item)
