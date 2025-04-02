@@ -156,18 +156,27 @@ class Battle:
             return False
 
     # Choose a Selection
-    def choose_target(self, targets, character, condition=True):
+    def choose_target(self, targets, character):
         print("\nChoose a target:")
         time.sleep(1)
 
-        # Display Targets
-        targets = [t for t in targets if condition]
-        for i, target in enumerate(targets):
+        choices = []
+        # Display Ally Targets
+        allies = [c for c in targets if c in self.get_character_allies(character)]
+        print(f"-------Allies-------")
+        for i, target in enumerate(allies):
             print(f"{i+1}. {target}")
+            choices.append(str(i+1))
+
+        # Display Enemy Targets
+        enemies = [c for c in targets if c in self.get_character_enemies(character)]
+        print(f"\n-------Enemies-------")
+        for i, target in enumerate(enemies):
+            print(f"{i+1+len(allies)}. {target}")
+            choices.append(str(i+1+len(allies)))
 
         time.sleep(1)
-        choice = self.get_player(character).get_input(
-            "Enter target number: ", [str(i+1) for i in range(len(targets))])
+        choice = self.get_player(character).get_input("Enter target number: ", choices)
         if choice.isdigit():
             index = int(choice) - 1
             if 0 <= index < len(targets):
