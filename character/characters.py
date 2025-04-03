@@ -205,8 +205,6 @@ class Damage:
         return int(math.floor(total))
 
 # Stats
-
-
 class Stat:
     def __init__(self, base_value, name=None, is_natural=True, is_float=False):
         self.name = None if name is None else name
@@ -260,12 +258,10 @@ class ResourceStat(Stat):
         self.resource_value = self.total
 
     def change_resource_by_val(self, val):
-        self.resource_value = min(
-            self.total, max(self.resource_value + val, 0))
+        self.resource_value = min(self.total, max(self.resource_value + val, 0))
 
     def change_resource_by_perc(self, val):
-        self.resource_value = max(0, max(self.total, int(
-            (self.get_percentage() + val) * self.total)))
+        self.resource_value = max(0, max(self.total, int((self.get_percentage() + val) * self.total)))
 
     def get_percentage(self):
         return (self.resource_value/self.total)
@@ -274,8 +270,6 @@ class ResourceStat(Stat):
         return f"Stat(base={self.resource_value}/{self.base_value}, total={self.resource_value}/{self.total})"
 
 # Colour Type
-
-
 class Colour(Enum):
     NONE = auto()
     RED = auto()

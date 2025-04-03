@@ -45,6 +45,10 @@ class Battle:
             return self.winner
 
     # Battle Methods
+    def display_battle_status(self):
+        print(self)
+        time.sleep(1)
+        
     def trigger_effects(self, character, trigger, **kwargs):
         # Status Effects
         for effect in character.status_effects:
@@ -54,14 +58,24 @@ class Battle:
         for sigil in character.sigils:
             for effect in sigil.passive_effects:
                 effect.check(character, self, **kwargs, trigger=trigger)
-
-    def display_battle_status(self):
-        print(self)
-        time.sleep(1)
+                
+    def add_duration(self):
+        # Sigil Effects
+        for character in self.get_all_characters():
+            for sigil in character.sigils:
+                for passive in sigil.passive_effects:
+                    passive.add_duration(self)
+                
+    def next_turn(self, character):
+        self.turn += 1 # Start of Turn
+        self.add_duration()
+        self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
+        self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
+        for chr in self.get_all_characters():
+            self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)    
 
     # Start the Battle
     def start_battle(self):
-        # Start of Battles
         self.turn = 0
 
         # Trigger Start of Battle Effects
@@ -80,14 +94,9 @@ class Battle:
                 if not character.is_alive():
                     continue
 
-                # Trigger Start of Turn Effects
-                self.turn += 1 # Start of Turn
-                self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
-                self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
-                for chr in self.get_all_characters():
-                    self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)
-
+                self.next_turn(character)
                 time.sleep(1)
+                
                 self.display_battle_status()  # Display Battle Status
                 self.choose_action(character)  # Choose Action
 
