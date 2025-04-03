@@ -1,4 +1,5 @@
 import time
+import math
 
 class Battle:
     # Constructor
@@ -49,6 +50,9 @@ class Battle:
         print(self)
         time.sleep(1)
         
+    def can_battle_continue(self):
+        return any(c.is_alive() for c in self.playerOne.characters) and any(c.is_alive() for c in self.playerTwo.characters)
+        
     def trigger_effects(self, character, trigger, **kwargs):
         # Status Effects
         for effect in character.status_effects:
@@ -67,39 +71,46 @@ class Battle:
                     passive.add_duration(self)
                 
     def next_turn(self, character):
-        self.turn += 1 # Start of Turn
+        self.turn += 1 
         self.add_duration()
         self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
         self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
         for chr in self.get_all_characters():
-            self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)    
+            self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)   
+        time.sleep(1) 
+        
+        self.display_battle_status()  # Display Battle Status
+        self.choose_action(character)  # Choose Action
 
     # Start the Battle
     def start_battle(self):
         self.turn = 0
+        AP_THRESHOLD = sum([c.speed.total for c in self.get_all_characters()]) * 2
 
         # Trigger Start of Battle Effects
         for character in self.get_all_characters():
             self.trigger_effects(character, trigger="on_start_of_battle")
 
         # Battle Loop
-        while any(c.is_alive() for c in self.playerOne.characters) and any(c.is_alive() for c in self.playerTwo.characters):
-
-            # Calculate Turn Order
-            all_characters = sorted([c for c in self.get_all_characters(
-            ) if c.is_alive()], key=lambda c: c.speed.total, reverse=True)
-
-            # Character Turns
-            for character in all_characters:
+        while self.can_battle_continue():
+            # Increase Action Points
+            for character in self.get_all_characters():
+                character.action_points.base_value += (((50 * math.sqrt(character.speed.total / 50)) * 100)/(AP_THRESHOLD))
+            
+            # Determine Next Characters
+            active_characters = [c for c in self.get_all_characters() if c.action_points.total >= AP_THRESHOLD]
+            active_characters.sort(key=lambda c: c.speed.total, reverse=True)
+            
+            # Peform Character's Turn
+            for character in active_characters:
+                if not self.can_battle_continue():
+                    break
                 if not character.is_alive():
                     continue
-
-                self.next_turn(character)
-                time.sleep(1)
                 
-                self.display_battle_status()  # Display Battle Status
-                self.choose_action(character)  # Choose Action
-
+                self.next_turn(character)
+                character.action_points.clear_modifiers()
+                character.action_points.base_value = 0
         self.end_battle()
 
     def end_battle(self):

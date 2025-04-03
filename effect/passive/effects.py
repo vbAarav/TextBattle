@@ -9,7 +9,7 @@ def thousand_divine_cuts(character, battle, **kwargs):
         enemy.defense.add_modifier(0.95, is_multiplicative=True)
         print(f"{enemy.name} DEF reduced by 5% {old_defense} -> {enemy.defense.total}")
 
-THOUSAND_DIVINE_CUTS = PassiveEffect("Thousand Divine Cuts", description="At the start of battle, All enemies have DEF reduced by 5%",
+THOUSAND_DIVINE_CUTS = PassiveEffect("Thousand Divine Cuts", description="At the start of battle, Decrease all enemies DEF by 5%",
                                      effects=[ComplexEffect(effects.trigger_on_start_of_battle, thousand_divine_cuts)])
 
 # Early Stance
