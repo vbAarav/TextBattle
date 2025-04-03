@@ -1,6 +1,6 @@
 from magic.sigils import Sigil
 import effect.active_effects as active_effects
-import effect.passive_effects as passive_effects
+import effect.passive.effects as passive_effects
 
 # Runes
 POWER = Sigil(
@@ -53,6 +53,18 @@ GLOWING_GRASS = Sigil(
 BLUE_LIGHTNING = Sigil(
     name="Blue Lightning",
     active_effects=[active_effects.EVASIVE_AGILITY, active_effects.GALE_LIGHTNING]
+)
+
+LESSER_LIGHT = Sigil(
+    name="Lesser Light",
+    active_effects=[active_effects.RUNE_FORCE],
+    passive_effects=[passive_effects.GLOWING_AURA]
+)
+
+SHADOW_WIND = Sigil(
+    name="Shadow Wind",
+    active_effects=[active_effects.RUNE_FORCE],
+    passive_effects=[passive_effects.EMBRACE_THE_DARKNESS]
 )
 
 PURPLE_POWER = Sigil(
