@@ -1,5 +1,11 @@
 import random
+<<<<<<< HEAD
 import time                                 
+=======
+import time                 
+    
+                
+>>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
 class ActiveEffect:
     def __init__(self, name, description="", effect_function=None):
         self.name = name
@@ -49,6 +55,7 @@ class ComplexEffect:
                 self.is_active = False
                 self.current_duration = 0
 
+<<<<<<< HEAD
 
 <<<<<<< HEAD
     
@@ -107,8 +114,12 @@ class PassiveEffect(Effect):
 
 
 class StatusEffect(Effect):
+=======
+class StatusEffect:
+>>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
     def __init__(self, name, description="", duration=1, apply_effect=None, ongoing_effect=None, trigger_condition=None):
-        super().__init__(name, description)
+        self.name = name
+        self.description = description
         self.duration = duration
         self.apply_effect = apply_effect
         self.ongoing_effect = ongoing_effect
@@ -137,9 +148,14 @@ class StatusEffect(Effect):
 
     def __repr__(self):
         return f"{self.name}: {self.duration}"
+<<<<<<< HEAD
 
 
 >>>>>>> 25f2f45 (Improved the Passive Effects System)
+=======
+    
+    
+>>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
 # Trigger Conditions
 def trigger_on_start_of_battle(character, battle, **kwargs): # At the start of battle
     return kwargs.get("trigger") == "on_start_of_battle"
@@ -161,10 +177,14 @@ def trigger_after_receive_attack(character, battle, **kwargs): # After receiving
 # Turn Triggers
 def trigger_on_turn_x(x):  # At the start of turn (X)
 <<<<<<< HEAD
+<<<<<<< HEAD
     return lambda character, battle, **kwargs: kwargs.get("trigger") == "on_start_of_turn" and battle.turn == x
 =======
     return lambda character, battle, **kwargs: battle.turn == x
 >>>>>>> 25f2f45 (Improved the Passive Effects System)
+=======
+    return lambda character, battle, **kwargs: kwargs.get("trigger") == "on_start_of_turn" and battle.turn == x
+>>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
 
 def trigger_on_start_of_turn(character, battle, **kwargs):  # At the start of turn
     return kwargs.get("trigger") == "on_start_of_turn"
