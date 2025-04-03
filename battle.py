@@ -51,11 +51,17 @@ class Battle:
         time.sleep(1)
         
 <<<<<<< HEAD
+<<<<<<< HEAD
     def can_battle_continue(self):
         return any(c.is_alive() for c in self.playerOne.characters) and any(c.is_alive() for c in self.playerTwo.characters)
         
 =======
 >>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
+=======
+    def can_battle_continue(self):
+        return any(c.is_alive() for c in self.playerOne.characters) and any(c.is_alive() for c in self.playerTwo.characters)
+        
+>>>>>>> e966423 (Implement Evasion, Accuracy and Better Speed Mechanic)
     def trigger_effects(self, character, trigger, **kwargs):
         # Status Effects
         for effect in character.status_effects:
@@ -88,13 +94,21 @@ class Battle:
                     passive.add_duration(self)
                 
     def next_turn(self, character):
-        self.turn += 1 # Start of Turn
+        self.turn += 1 
         self.add_duration()
         self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
         self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
         for chr in self.get_all_characters():
+<<<<<<< HEAD
             self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)    
 >>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
+=======
+            self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)   
+        time.sleep(1) 
+        
+        self.display_battle_status()  # Display Battle Status
+        self.choose_action(character)  # Choose Action
+>>>>>>> e966423 (Implement Evasion, Accuracy and Better Speed Mechanic)
 
     # Start the Battle
     def start_battle(self):
@@ -122,6 +136,7 @@ class Battle:
                 if not character.is_alive():
                     continue
 <<<<<<< HEAD
+<<<<<<< HEAD
                 
                 self.next_turn(character)
                 character.action_points.clear_modifiers()
@@ -135,6 +150,12 @@ class Battle:
                 self.choose_action(character)  # Choose Action
 
 >>>>>>> 25f2f45 (Improved the Passive Effects System)
+=======
+                
+                self.next_turn(character)
+                character.action_points.clear_modifiers()
+                character.action_points.base_value = 0
+>>>>>>> e966423 (Implement Evasion, Accuracy and Better Speed Mechanic)
         self.end_battle()
 
     def end_battle(self):
