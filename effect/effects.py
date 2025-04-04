@@ -1,7 +1,5 @@
 import random
-import time                 
-    
-                
+import time                                 
 class ActiveEffect:
     def __init__(self, name, description="", effect_function=None):
         self.name = name
@@ -14,39 +12,44 @@ class ActiveEffect:
 
     def __repr__(self):
         return f"ActiveEffect({self.name})"
+    
+class ComplexEffect:
+    def __init__(self, trigger, effect,
+                 condition=None,
+                 remove_effect=None,
+                 max_duration=None, max_stack=None):
+        
+        self.trigger = trigger
+        self.effect = effect
+        self.condition = condition
+        self.max_duration = max_duration
+        self.max_stack = max_stack
+        self.remove_effect = remove_effect
+        
+        self.is_active = False        
+        self.current_duration = 0
+        self.current_stack = 0
+        
+    def check_and_apply(self, holder, character, battle, **kwargs):
+        if self.trigger and self.trigger(character, battle, **kwargs):
+            if not(self.condition) or (self.condition and self.condition(character, battle, **kwargs)):
+                if self.effect:
+                    print(f"{character.name}'s {holder.name} has triggered")
+                    time.sleep(1)
+                    self.effect(character, battle, **kwargs)
+                    self.is_active = True
+                    self.current_stack += 1
+                    
+    def check_and_remove(self, holder, character, battle, **kwargs):
+        if self.is_active and (self.max_duration and self.current_duration > self.max_duration):
+            if self.remove_effect:
+                print(f"{character.name}'s {holder.name} has deactivated")
+                time.sleep(1)
+                self.remove_effect(character, battle, **kwargs)
+                self.is_active = False
+                self.current_duration = 0
 
-class StatusEffect:
-    def __init__(self, name, description="", duration=1, apply_effect=None, ongoing_effect=None, trigger_condition=None):
-        self.name = name
-        self.description = description
-        self.duration = duration
-        self.apply_effect = apply_effect
-        self.ongoing_effect = ongoing_effect
-        self.trigger_condition = trigger_condition
 
-    def check_and_apply(self, character, battle, **kwargs):
-        """Checks if the condition is met and applies the effect if so."""
-        if self.trigger_condition and self.trigger_condition(character, battle, **kwargs):
-            self.apply(character, battle)
-
-    def apply(self, character, battle):
-        if self.apply_effect:
-            self.apply_effect(character, battle)
-
-    def update_effect(self, character, battle, **kwargs):
-        if self.ongoing_effect:
-            if self.trigger_condition and self.trigger_condition(character, battle, **kwargs):
-                self.ongoing_effect(character, battle)
-        self.decrement_duration(character)
-
-    def decrement_duration(self, character):
-        self.duration -= 1
-        if self.duration <= 0:
-            character.status_effects.remove(self)
-            print(f"{character.name} is no longer affected by {self.name}.")
-
-    def __repr__(self):
-        return f"{self.name}: {self.duration}"
     
     
 # Trigger Conditions

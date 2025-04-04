@@ -1,4 +1,5 @@
-from effect.passive.passive_effect import PassiveEffect, ComplexEffect
+from effect.passive.passive_effect import PassiveEffect
+from effect.effects import ComplexEffect
 import effect.effects as effects
 
 
