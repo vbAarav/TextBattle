@@ -1,6 +1,6 @@
 from character.characters import Damage
 from effect.effects import ActiveEffect
-import effect.status_effects as status_effects
+import effect.statuses.effects as effects
 import random
 import time
 
@@ -73,7 +73,9 @@ def damage_ally_and_poison_enemy(character, battle):
 
         # Poison
         random_enemy = random.choice(battle.get_character_enemies(character))
-        random_enemy.add_status_effect(status_effects.POISON)
+        poison = effects.POISON
+        poison.max_duration = 3
+        random_enemy.add_status_effect(poison)
 
     else:
         # Deal Damage

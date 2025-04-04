@@ -155,6 +155,7 @@ class Character:
 
     def add_status_effect(self, status_effect):
         if status_effect not in self.status_effects:
+            status_effect.current_stack += 1
             self.status_effects.append(status_effect)
             print(f"{self.name} is now affected by {status_effect.name}.")
             time.sleep(1)
