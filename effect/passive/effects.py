@@ -1,9 +1,14 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from effect.passive.passive_effect import PassiveEffect
 from effect.effects import ComplexEffect
 =======
 from effect.passive.passive_effect import PassiveEffect, ComplexEffect
 >>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
+=======
+from effect.passive.passive_effect import PassiveEffect
+from effect.effects import ComplexEffect
+>>>>>>> 02eaa78 (Improved Status Effect Architecture to Handle Larger Effects)
 import effect.effects as effects
 
 

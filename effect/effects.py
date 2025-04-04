@@ -1,11 +1,15 @@
 import random
 <<<<<<< HEAD
+<<<<<<< HEAD
 import time                                 
 =======
 import time                 
     
                 
 >>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
+=======
+import time                                 
+>>>>>>> 02eaa78 (Improved Status Effect Architecture to Handle Larger Effects)
 class ActiveEffect:
     def __init__(self, name, description="", effect_function=None):
         self.name = name
@@ -55,6 +59,7 @@ class ComplexEffect:
                 self.is_active = False
                 self.current_duration = 0
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 <<<<<<< HEAD
@@ -153,6 +158,9 @@ class StatusEffect:
 
 >>>>>>> 25f2f45 (Improved the Passive Effects System)
 =======
+=======
+
+>>>>>>> 02eaa78 (Improved Status Effect Architecture to Handle Larger Effects)
     
     
 >>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)

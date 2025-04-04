@@ -87,11 +87,15 @@ class Battle:
 =======
                 
     def add_duration(self):
-        # Sigil Effects
         for character in self.get_all_characters():
-            for sigil in character.sigils:
-                for passive in sigil.passive_effects:
-                    passive.add_duration(self)
+            # Status Effects
+            for effect in character.status_effects:
+                effect.add_duration(character, self)
+            
+            # Sigil Effects
+                for sigil in character.sigils:
+                    for passive in sigil.passive_effects:
+                        passive.add_duration(self)
                 
     def next_turn(self, character):
         self.turn += 1 

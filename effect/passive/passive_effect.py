@@ -1,5 +1,6 @@
 import time
 <<<<<<< HEAD
+<<<<<<< HEAD
 from effect.effects import ComplexEffect               
 =======
 
@@ -40,6 +41,9 @@ class ComplexEffect:
                 self.current_duration = 0
                 
 >>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
+=======
+from effect.effects import ComplexEffect               
+>>>>>>> 02eaa78 (Improved Status Effect Architecture to Handle Larger Effects)
                 
 class PassiveEffect:
     def __init__(self, name, effects: list[ComplexEffect], description=""):
