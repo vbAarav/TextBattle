@@ -1,14 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 from effect.passive.passive_effect import PassiveEffect
 from effect.effects import ComplexEffect
-=======
-from effect.passive.passive_effect import PassiveEffect, ComplexEffect
->>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
-=======
-from effect.passive.passive_effect import PassiveEffect
-from effect.effects import ComplexEffect
->>>>>>> 02eaa78 (Improved Status Effect Architecture to Handle Larger Effects)
 import effect.effects as effects
 
 
@@ -19,15 +10,7 @@ def thousand_divine_cuts(character, battle, **kwargs):
         enemy.defense.add_modifier(0.95, is_multiplicative=True)
         print(f"{enemy.name} DEF reduced by 5% {old_defense} -> {enemy.defense.total}")
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 THOUSAND_DIVINE_CUTS = PassiveEffect("Thousand Divine Cuts", description="At the start of battle, Decrease all enemies DEF by 5%",
-=======
-THOUSAND_DIVINE_CUTS = PassiveEffect("Thousand Divine Cuts", description="At the start of battle, All enemies have DEF reduced by 5%",
->>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
-=======
-THOUSAND_DIVINE_CUTS = PassiveEffect("Thousand Divine Cuts", description="At the start of battle, Decrease all enemies DEF by 5%",
->>>>>>> e966423 (Implement Evasion, Accuracy and Better Speed Mechanic)
                                      effects=[ComplexEffect(effects.trigger_on_start_of_battle, thousand_divine_cuts)])
 
 # Early Stance
