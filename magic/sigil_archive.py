@@ -55,10 +55,6 @@ BLUE_LIGHTNING = Sigil(
     active_effects=[active_effects.EVASIVE_AGILITY, active_effects.GALE_LIGHTNING]
 )
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
 LESSER_LIGHT = Sigil(
     name="Lesser Light",
     active_effects=[active_effects.RUNE_FORCE],
@@ -71,11 +67,6 @@ SHADOW_WIND = Sigil(
     passive_effects=[passive_effects.EMBRACE_THE_DARKNESS]
 )
 
-<<<<<<< HEAD
-=======
->>>>>>> da7f2aa (Replaced Rune for Sigil)
-=======
->>>>>>> 6c35bee (Improved Passive Effect Architecture to Handle Larger Effects)
 PURPLE_POWER = Sigil(
     name="Purple Power",
     active_effects=[active_effects.RUNE_FORCE, active_effects.UNSTABLE_STRENGTH],
