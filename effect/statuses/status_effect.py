@@ -1,13 +1,21 @@
 import time
-from effect.effects import ComplexEffect  
+from effect.effects import ComplexEffect 
+from enum import Enum, auto 
+from character.characters import Stat
+
+class StatusType(Enum):
+    BUFF = auto()
+    DEBUFF = auto()
+    NEUTRAL = auto()
 
 class StatusEffect:
-    def __init__(self, name, effects: list[ComplexEffect], description="",
+    def __init__(self, name, effects: list[ComplexEffect], type=StatusType.NEUTRAL, description="",
                  condition=None, remove_effect=None,
                  max_duration=None, max_stack=None):
         self.name = name
         self.description = description        
         self.effects = effects
+        self.type = type;
         
         self.condition = condition
         self.max_duration = max_duration
@@ -56,3 +64,6 @@ class StatusEffect:
 
     def __repr__(self):
         return f"{self.name}: |{self.get_duration()}|{self.current_stack}|" 
+    
+
+    
