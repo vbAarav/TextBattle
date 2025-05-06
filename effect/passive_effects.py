@@ -1,21 +1,31 @@
 from effect.effect_base import ComplexEffect, PassiveEffect
 import effect.effect_base as effect_base
+import effect.status_effects as status_effects
+import copy
 
 
-# Thousand Divine Cuts
-THOUSAND_DIVINE_CUTS = PassiveEffect(
-    "Thousand Divine Cuts",
-     description="At the start of battle, Decrease all enemies DEF by 5%",
+# Special Intimidate
+SPECIAL_INTIMIDATE = PassiveEffect(
+    "Special Intimidate",
+     description="At the start of battle, Decrease all enemies DEF by 10% and inflict Stun for 1 turn",
      effects=
      [
-        ComplexEffect(effect_base.trigger_on_start_of_battle, lambda character, battle, **kwargs: thousand_divine_cuts(character, battle, **kwargs))
+        ComplexEffect(effect_base.trigger_on_start_of_battle, lambda character, battle, **kwargs: special_intimidate(character, battle, **kwargs)),
+        ComplexEffect(effect_base.trigger_on_start_of_battle, lambda character, battle, **kwargs: special_intimidate_stun(character, battle, **kwargs))
      ]
 )
-def thousand_divine_cuts(character, battle, **kwargs):
+def special_intimidate(character, battle, **kwargs):
     for enemy in battle.get_character_enemies(character):
         old_defense = enemy.defense.total
-        enemy.defense.add_modifier(0.95, is_multiplicative=True)
-        print(f"{enemy.name} DEF reduced by 5% {old_defense} -> {enemy.defense.total}")
+        enemy.defense.add_modifier(0.90, is_multiplicative=True)
+        print(f"{enemy.name} DEF reduced by 10% {old_defense} -> {enemy.defense.total}")
+
+def special_intimidate_stun(character, battle, **kwargs):
+    for enemy in battle.get_character_enemies(character):
+        stun = copy.deepcopy(status_effects.STUN)
+        stun.max_duration = 2
+        enemy.add_status_effect(stun, battle)
+        
 
 
 

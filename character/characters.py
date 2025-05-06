@@ -36,6 +36,9 @@ class Character:
         # Battle Stats
         self.action_points = Stat(0, name="AP", is_float=0)
 
+        # States
+        self.acts = True
+
         # Belongings
         self.items = []
         self.sigils = sigils if sigils is not None else []
@@ -97,6 +100,9 @@ class Character:
     # Character State Methods
     def is_alive(self):
         return self.max_hp.resource_value > 0
+    
+    def can_act(self):
+        return self.acts
 
     def all_stats(self):
         return [self.max_hp, self.attack, self.defense, self.speed, self.resistance, self.crit_chance, self.crit_resistance, self.crit_damage, self.crit_shield, self.evasion, self.accuracy]
@@ -153,10 +159,11 @@ class Character:
             f"{self.name} heals for {heal_amount} HP. HP: {self.max_hp.resource_value}")
         time.sleep(1)
 
-    def add_status_effect(self, status_effect):
+    def add_status_effect(self, status_effect, battle):
         if status_effect not in self.status_effects:
             status_effect.current_stack += 1
             self.status_effects.append(status_effect)
+            status_effect.on_apply(self, battle)
             print(f"{self.name} is now affected by {status_effect.name}.")
             time.sleep(1)
 
