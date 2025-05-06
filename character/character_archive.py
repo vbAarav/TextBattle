@@ -100,7 +100,7 @@ ROCK_GOLEM = Character(
     attack=6,
     defense=10,
     speed=10,
-    sigils=[sigil_archive.ROCK]
+    sigils=[sigil_archive.EARTH]
 )
 
 STORM_HAWK = Character(
