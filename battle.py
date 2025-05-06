@@ -7,6 +7,7 @@ class Battle:
         self.playerOne = playerOne
         self.playerTwo = playerTwo
         self.turn = 0
+        self.character_turns = {}
         self.winner = None
 
     def __repr__(self):
@@ -62,33 +63,43 @@ class Battle:
         for sigil in character.sigils:
             for effect in sigil.passive_effects:
                 effect.check(character, self, **kwargs, trigger=trigger)
-                
-    def add_duration(self):
+
+    def add_duration_all(self):
         for character in self.get_all_characters():
-            # Status Effects
-            for effect in character.status_effects:
-                effect.add_duration(character, self)
-            
-            # Sigil Effects
-                for sigil in character.sigils:
-                    for passive in sigil.passive_effects:
-                        passive.add_duration(self)
+            self.add_duration(character)
+                
+    def add_duration(self, character):
+        # Status Effects
+        for effect in character.status_effects:
+            effect.add_duration(character, self)
+        
+        # Sigil Effects
+        for sigil in character.sigils:
+            for passive in sigil.passive_effects:
+                passive.add_duration(self)
                 
     def next_turn(self, character):
-        self.turn += 1 
-        self.add_duration()
-        self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
-        self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
-        for chr in self.get_all_characters():
-            self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)   
-        time.sleep(1) 
-        
-        self.display_battle_status()  # Display Battle Status
-        self.choose_action(character)  # Choose Action
+        # Check if character can act
+        if character.can_act():
+            self.turn += 1 
+            self.character_turns[character] += 1
+            self.add_duration(character)
+            self.trigger_effects(character, trigger="on_start_of_turn_x", turn=self.turn)
+            self.trigger_effects(character, trigger="on_start_of_character_turn", turn=self.turn)
+            for chr in self.get_all_characters():
+                self.trigger_effects(chr, trigger="on_start_of_turn", turn=self.turn)   
+            time.sleep(1) 
+            
+            self.display_battle_status()  # Display Battle Status
+            self.choose_action(character)  # Choose Action
+        else:
+            print(f"{character.name} is unable to ACT")
+            self.add_duration(character)
 
     # Start the Battle
     def start_battle(self):
         self.turn = 0
+        self.character_turns = {chr : 0 for chr in self.get_all_characters()}
         AP_THRESHOLD = sum([c.speed.total for c in self.get_all_characters()]) * 2
 
         # Trigger Start of Battle Effects
@@ -105,7 +116,7 @@ class Battle:
             active_characters = [c for c in self.get_all_characters() if c.action_points.total >= AP_THRESHOLD]
             active_characters.sort(key=lambda c: c.speed.total, reverse=True)
             
-            # Peform Character's Turn
+            # Determine Speed Ties
             for character in active_characters:
                 if not self.can_battle_continue():
                     break
@@ -115,6 +126,7 @@ class Battle:
                 self.next_turn(character)
                 character.action_points.clear_modifiers()
                 character.action_points.base_value = 0
+
         self.end_battle()
 
     def end_battle(self):

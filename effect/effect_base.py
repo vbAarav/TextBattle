@@ -89,7 +89,7 @@ class StatusType(Enum):
 
 class StatusEffect:
     def __init__(self, name, effects: list[ComplexEffect], type=StatusType.NEUTRAL, description="",
-                 condition=None, remove_effect=None,
+                 condition=None, on_apply=None, remove_effect=None,
                  max_duration=None, max_stack=None):
         self.name = name
         self.description = description        
@@ -99,6 +99,7 @@ class StatusEffect:
         self.condition = condition
         self.max_duration = max_duration
         self.max_stack = max_stack
+        self.on_apply = on_apply
         self.remove_effect = remove_effect
         
         self.is_active = False        
@@ -142,7 +143,10 @@ class StatusEffect:
             return self.current_duration
 
     def __repr__(self):
-        return f"{self.name}: |{self.get_duration()}|{self.current_stack}|" 
+        if self.max_stack:
+            return f"{self.name}: |{self.get_duration()}|{self.current_stack}|" 
+        else:
+            return f"{self.name}: {self.get_duration()}" 
     
     
 # Trigger Conditions

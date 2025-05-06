@@ -3,6 +3,7 @@ from effect.effect_base import ActiveEffect
 import effect.status_effects as status_effects
 import random
 import time
+import copy
 
 # Rune Force
 RUNE_FORCE = ActiveEffect(
@@ -73,9 +74,9 @@ def _damage_ally_and_poison_enemy(character, battle):
 
         # Poison
         random_enemy = random.choice(battle.get_character_enemies(character))
-        poison = status_effects.POISON
+        poison = copy.deepcopy(status_effects.POISON)
         poison.max_duration = 3
-        random_enemy.add_status_effect(poison)
+        random_enemy.add_status_effect(poison, battle)
 
     else:
         # Deal Damage
