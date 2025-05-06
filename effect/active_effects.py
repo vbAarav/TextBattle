@@ -1,26 +1,34 @@
 from character.characters import Damage
-from effect.effects import ActiveEffect
-import effect.statuses.effects as effects
+from effect.effect_base import ActiveEffect
+import effect.status_effects as status_effects
 import random
 import time
 
 # Rune Force
-def rune_force(character, battle):
+RUNE_FORCE = ActiveEffect(
+    "Rune Force",
+    description="Attacks the target. Dealing 120% of ATK as Damage",
+    effect_function=lambda character, battle: _rune_force(character, battle)
+)
+def _rune_force(character, battle):
     target = battle.choose_target(battle.get_all_characters(), character)
     if target:
         print(f"{character.name} attacks {target.name}!")
         multiplier = 1.2
+        damage_amount = max(character.attack.total + 1, round(character.attack.total * multiplier))
         damage = Damage()
-        damage.build(max(character.attack.total + 1,
-                     int(character.attack.total * multiplier)), character, target)
+        damage.build(damage_amount, character, target)
         target.receive_attack(damage, character, battle)
         time.sleep(1)
-
-RUNE_FORCE = ActiveEffect(
-    "Rune Force", description="Attacks the target. Dealing 120% of ATK as Damage", effect_function=rune_force)
+        
 
 # Large Slice
-def large_slice(character, battle):
+LARGE_SLICE = ActiveEffect(
+    "Large Slice",
+    description="Attacks the target. Dealing (100% - 150%) of ATK as Damage",
+    effect_function=lambda character, battle: _large_slice(character, battle)
+)
+def _large_slice(character, battle):
     target = battle.choose_target(battle.get_all_characters(), character)
     if target:
         print(f"{character.name} attacks {target.name}!")
@@ -32,36 +40,28 @@ def large_slice(character, battle):
         time.sleep(1)
 
 
-LARGE_SLICE = ActiveEffect(
-    "Large Slice", description="Attacks the target. Dealing (100% - 150%) of ATK as Damage", effect_function=large_slice)
-
-
-# Heal All
-def heal_all_allies(character, battle):
-    for ally in battle.get_character_allies(character):
-        heal_amount = max(1, ally.max_hp.total * 0.05)
-        ally.receive_heal(heal_amount)
-        time.sleep(1)
-
-
-HEAL_ALL = ActiveEffect(
-    "Heal All", description="All allies heal health equal to 5% of MAXHP", effect_function=heal_all_allies)
-
 
 # Guard Switch
-def swap_atk_def(character, battle):
+GUARD_SWITCH = ActiveEffect(
+    "Guard Switch",
+    description="Swaps the character's ATK and DEF Stats",
+    effect_function=lambda character, battle: _swap_atk_def(character, battle))
+
+def _swap_atk_def(character, battle):
     character.attack, character.defense = character.defense, character.attack
     character.attack.name, character.defense.name = character.defense.name, character.attack.name
     print(f"{character.name} swapped ATK and DEF stats.")
     time.sleep(1)
 
 
-GUARD_SWITCH = ActiveEffect(
-    "Guard Switch", description="Swaps the character's ATK and DEF Stats", effect_function=swap_atk_def)
-
 
 # Enforced Vigor
-def damage_ally_and_poison_enemy(character, battle):
+ENFORCED_VIGOR = ActiveEffect(
+    "Enforced Vigor",
+    description="Attacks the target. Dealing 50% of ATK as Damage. If the target is an ally. Attacks the target. Dealing 180% of ATK as Damage and poison a random enemy for 3 turns.",
+    effect_function=lambda character, battle: _damage_ally_and_poison_enemy(character, battle))
+
+def _damage_ally_and_poison_enemy(character, battle):
     target = battle.choose_target(battle.get_all_characters(), character)
     if (target in battle.get_character_allies(character)) and (target != character):
         # Deal Damage
@@ -73,7 +73,7 @@ def damage_ally_and_poison_enemy(character, battle):
 
         # Poison
         random_enemy = random.choice(battle.get_character_enemies(character))
-        poison = effects.POISON
+        poison = status_effects.POISON
         poison.max_duration = 3
         random_enemy.add_status_effect(poison)
 
@@ -85,13 +85,14 @@ def damage_ally_and_poison_enemy(character, battle):
         target.receive_attack(damage, character, battle)
 
 
-ENFORCED_VIGOR = ActiveEffect(
-    "Enforced Vigor", description="Attacks the target. Dealing 50% of ATK as Damage. If the target is an ally. Attacks the target. Dealing 180% of ATK as Damage and poison a random enemy for 3 turns.",
-    effect_function=damage_ally_and_poison_enemy)
-
+POLISH = ActiveEffect(
+    "Polish",
+    description="Increases all allies DEF by 5% for 3 turns.",
+    effect_function=lambda character, battle: _polish(character, battle)
+)
 
 # Polish
-def polish(character, battle):
+def _polish(character, battle):
     for target in battle.get_character_allies(character):
         old_defense = target.defense.total
         target.defense.add_modifier(1.05, is_multiplicative=True)
@@ -99,13 +100,15 @@ def polish(character, battle):
             f"{target.name} DEF increased by 5% {old_defense} -> {target.defense.total}")
 
 
-POLISH = ActiveEffect(
-    "Polish", description="Increases all allies DEF by 5% for 3 turns.",
-    effect_function=polish
-)
+
 
 # Gale Lightning
-def gale_lightning(character, battle):
+GALE_LIGHTNING = ActiveEffect(
+    "Gale Lightning", description="Attacks the target. Dealing 100% of ATK as Damage and Increases own SPD by 10% for 2 turns.",
+    effect_function=lambda character, battle: _gale_lightning(character, battle)
+)
+
+def _gale_lightning(character, battle):
     # Deal Damage
     target = battle.choose_target(battle.get_all_characters(), character)
     print(f"{character.name} attacks {target.name}!")
@@ -120,16 +123,13 @@ def gale_lightning(character, battle):
     print(f"{character.name} SPD increased by 10% {old_speed} -> {character.speed.total}")
 
 
-GALE_LIGHTNING = ActiveEffect(
-    "Gale Lightning", description="Deals 100% ATK damage and increases its SPD by 10% for 2 turns.",
-    effect_function=gale_lightning
-)
+
 
 # Evasive Agility
 def evasive_agility(character, battle):
     old_evasion = character.evasion.total
     character.evasion.add_modifier(1.15, is_multiplicative=True)
-    print(f"{character.name} EV increased by 10% {old_evasion} -> {character.evasion.total}")
+    print(f"{character.name} EV increased by 15% {old_evasion} -> {character.evasion.total}")
 
 
 EVASIVE_AGILITY = ActiveEffect(
