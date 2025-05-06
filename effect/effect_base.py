@@ -14,18 +14,16 @@ class ActiveEffect:
             self.effect_function(character, battle)
 
     def __repr__(self):
-        return f"ActiveEffect({self.name})"
+        return f"ActiveEffect({self.name})"     
     
-    
-    
-    
-    
+
     
 class ComplexEffect:
     def __init__(self, trigger, effect,
                  condition=None,
                  remove_effect=None,
-                 max_duration=None, max_stack=None):
+                 max_duration=None,
+                 max_stack=None):
         
         self.trigger = trigger
         self.effect = effect
@@ -56,11 +54,7 @@ class ComplexEffect:
                 self.remove_effect(character, battle, **kwargs)
                 self.is_active = False
                 self.current_duration = 0
-  
-  
-  
-  
-  
+                
                 
 class PassiveEffect:
     def __init__(self, name, effects: list[ComplexEffect], description=""):
