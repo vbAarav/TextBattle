@@ -1,7 +1,6 @@
 from magic.sigils import Sigil
-from effect.effect_base import ComplexEffect
+from effect.effect_base import ComplexEffect, StatusEffect
 from character.characters import Damage
-from effect.statuses.status_effect import StatusEffect
 import effect.effect_base as effect_base
 import math
 

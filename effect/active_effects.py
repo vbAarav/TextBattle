@@ -84,14 +84,12 @@ def _damage_ally_and_poison_enemy(character, battle):
         damage.build(int(character.attack.total * 0.5), character, target)
         target.receive_attack(damage, character, battle)
 
-
+# Polish
 POLISH = ActiveEffect(
     "Polish",
     description="Increases all allies DEF by 5% for 3 turns.",
     effect_function=lambda character, battle: _polish(character, battle)
 )
-
-# Polish
 def _polish(character, battle):
     for target in battle.get_character_allies(character):
         old_defense = target.defense.total
@@ -100,11 +98,10 @@ def _polish(character, battle):
             f"{target.name} DEF increased by 5% {old_defense} -> {target.defense.total}")
 
 
-
-
 # Gale Lightning
 GALE_LIGHTNING = ActiveEffect(
-    "Gale Lightning", description="Attacks the target. Dealing 100% of ATK as Damage and Increases own SPD by 10% for 2 turns.",
+    "Gale Lightning",
+    description="Attacks the target. Dealing 100% of ATK as Damage and Increases own SPD by 10% for 2 turns.",
     effect_function=lambda character, battle: _gale_lightning(character, battle)
 )
 
@@ -126,18 +123,23 @@ def _gale_lightning(character, battle):
 
 
 # Evasive Agility
+EVASIVE_AGILITY = ActiveEffect(
+    "Evasive Agility",
+    description="Increases Evasion by 15% for 3 turns.",
+    effect_function=lambda character, battle: evasive_agility(character, battle)
+)
 def evasive_agility(character, battle):
     old_evasion = character.evasion.total
     character.evasion.add_modifier(1.15, is_multiplicative=True)
     print(f"{character.name} EV increased by 15% {old_evasion} -> {character.evasion.total}")
 
 
-EVASIVE_AGILITY = ActiveEffect(
-    "Evasive Agility", description="+15% Evasion for 3 turns.",
-    effect_function=evasive_agility
-)
-
 # Unstable Strength
+UNSTABLE_STRENGTH = ActiveEffect(
+    "Unstable Strength",
+    description="Deals (90 - 150)% ATK as Damage to the target. This attack ignores 20% of the target's DEF.",
+    effect_function=lambda character, battle: unstable_strength(character, battle))
+
 def unstable_strength(character, battle):
     target = battle.choose_target(battle.get_all_characters(), character)
     if target:
@@ -151,15 +153,14 @@ def unstable_strength(character, battle):
         time.sleep(1)
 
 
-UNSTABLE_STRENGTH = ActiveEffect(
-    "Unstable Strength", description="Deals (90 - 150)% ATK as Damage to the target. This attack ignores 20% of the target's DEF.",
-    effect_function=unstable_strength)
-
-
 # Dark Pit
+DARK_PIT = ActiveEffect(
+    "Dark Pit",
+    description="Deals 30% of ATK as Damage to all enemies. Increase multiplier by 50% for every dead character in battle.",
+    effect_function=lambda character, battle: dark_pit(character, battle))
+
 def dark_pit(character, battle):
-    dead_characters = len(
-        [chr for chr in battle.get_all_characters() if not (chr.is_alive())])
+    dead_characters = len([chr for chr in battle.get_all_characters() if not (chr.is_alive())])
     for enemy in battle.get_character_enemies(character):
         print(f"{character.name} attacks {enemy.name}!")
         damage = Damage()
@@ -169,6 +170,4 @@ def dark_pit(character, battle):
         enemy.receive_attack(damage, character, battle)
 
 
-DARK_PIT = ActiveEffect(
-    "Dark Pit", description="Deals 30% of ATK as Damage to all enemies. Increase multiplier by 50% for every dead character in battle.",
-    effect_function=dark_pit)
+

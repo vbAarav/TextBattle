@@ -82,7 +82,7 @@ POWER = Sigil(
     tier=1,
     rune_composition={runes.FIRE: 8, runes.WATER: 8},
     active_effects=[active_effects.RUNE_FORCE, active_effects.LARGE_SLICE,
-                    active_effects.ENFORCED_VIGOR, active_effects.GUARD_SWITCH, active_effects.HEAL_ALL],
+                    active_effects.ENFORCED_VIGOR, active_effects.GUARD_SWITCH],
     passive_effects=[passive_effects.THOUSAND_DIVINE_CUTS, passive_effects.EARLY_STANCE, passive_effects.DOUBLE_UP,
                      passive_effects.ENGINE, passive_effects.LATE_BLOOMER, passive_effects.LAST_STANCE, passive_effects.WOLF_HUNGER]
 )
@@ -130,7 +130,7 @@ GLOWING_GRASS = Sigil(
     name="Glowing Grass",
     tier=2,
     rune_composition={runes.LIGHT: 2, runes.GRASS: 2},
-    active_effects=[active_effects.RUNE_FORCE, active_effects.HEAL_ALL]
+    active_effects=[active_effects.RUNE_FORCE]
 )
 
 BLUE_LIGHTNING = Sigil(
