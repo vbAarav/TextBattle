@@ -1,6 +1,7 @@
 import random
 import battle
 import players
+import copy
 
 
 class Area:
@@ -14,10 +15,8 @@ class Area:
     # Events
     def explore_area(self, player):
         enemy_values = map(lambda x: x[0], list(self.enemies.values()))
-        enemies = random.choices(list(self.enemies.keys(
-        )), weights=enemy_values, k=random.randint(1, min(4, len(self.enemies.values()))))
-        current_battle = battle.Battle(
-            player, players.Enemy(characters=enemies))
+        enemies = random.choices(list(copy.deepcopy(e) for e in self.enemies.keys()), weights=enemy_values, k=random.randint(1, min(4, len(self.enemies.values()))))
+        current_battle = battle.Battle(player, players.Enemy(characters=enemies))
         current_battle.start_battle()
 
         if current_battle.get_winner() == player:
@@ -27,7 +26,6 @@ class Area:
             player.add_inventory_loot(loot)
 
     # Getters and Setters
-
     def add_neighbour(self, area):
         self.nbrs.append(area)
 
