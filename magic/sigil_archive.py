@@ -1,7 +1,7 @@
 from magic.sigils import Sigil
 import magic.runes as runes
 import effect.active_effects as active_effects
-import effect.passive.effects as passive_effects
+import effect.passive_effects as passive_effects
 
 
 # Runes

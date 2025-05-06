@@ -1,8 +1,8 @@
 from magic.sigils import Sigil
-from effect.effects import ComplexEffect
+from effect.effect_base import ComplexEffect
 from character.characters import Damage
 from effect.statuses.status_effect import StatusEffect
-import effect.effects as effects
+import effect.effect_base as effect_base
 import math
 
 # Poison
@@ -11,10 +11,10 @@ def poison(character, battle, **kwargs):
     print(f"{character.name} is poisoned")
     character.take_damage(damage_amount, battle)
 
-POISON = StatusEffect("Poison", description="Takes 6% of Max HP as damage at the start of turn", effects=[ComplexEffect(effects.trigger_on_start_of_turn, poison)])
+POISON = StatusEffect("Poison", description="Takes 6% of Max HP as damage at the start of turn", effects=[ComplexEffect(effect_base.trigger_on_start_of_turn, poison)])
 
 # Stun
 def stun(character, battle, **kwargs):
     print(f"{character.name} is stunned")
 
-STUN = StatusEffect("Stun", description="Target cannot act when under this effect", effects=[ComplexEffect(effects.trigger_on_start_of_character_turn, stun)])
+STUN = StatusEffect("Stun", description="Target cannot act when under this effect", effects=[ComplexEffect(effect_base.trigger_on_start_of_character_turn, stun)])
