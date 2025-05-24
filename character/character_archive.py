@@ -9,7 +9,7 @@ MC_TEMPLATE = Character(
     attack=3,
     defense=1,
     speed=1,
-    sigils=[sigil_archive.POWER]
+    sigils=[]
     )
 
 
