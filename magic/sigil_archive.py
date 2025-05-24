@@ -77,16 +77,6 @@ SPACE = Sigil(
     passive_effects=[passive_effects.QUICK_BOOTS]
 )
 
-POWER = Sigil(
-    name="Power",
-    tier=1,
-    rune_composition={runes.FIRE: 8, runes.WATER: 8},
-    active_effects=[active_effects.RUNE_FORCE, active_effects.LARGE_SLICE,
-                    active_effects.ENFORCED_VIGOR, active_effects.GUARD_SWITCH],
-    passive_effects=[passive_effects.SPECIAL_INTIMIDATE, passive_effects.EARLY_STANCE, passive_effects.DOUBLE_UP,
-                     passive_effects.ENGINE, passive_effects.LATE_BLOOMER, passive_effects.LAST_STANCE, passive_effects.WOLF_HUNGER]
-)
-
 FLOWING_STEAM = Sigil(
     name="Flowing Steam",
     tier=2,

@@ -14,16 +14,23 @@ class Area:
 
     # Events
     def explore_area(self, player):
+        self.start_battle(player)
+
+    def generate_enemies(self):       
         enemy_values = map(lambda x: x[0], list(self.enemies.values()))
         enemies = random.choices(list(copy.deepcopy(e) for e in self.enemies.keys()), weights=enemy_values, k=random.randint(1, min(4, len(self.enemies.values()))))
+        return enemies
+
+    def start_battle(self, player):
+        enemies = self.generate_enemies()
         current_battle = battle.Battle(player, players.Enemy(characters=enemies))
         current_battle.start_battle()
 
         if current_battle.get_winner() == player:
-            loot = random.choice(list(self.enemies.values()))[
-                1].generate_loot()
+            loot = random.choice(list(self.enemies.values()))[1].generate_loot()
             print(f"You found: {', '.join(str(item) for item in loot)}")
             player.add_inventory_loot(loot)
+
 
     # Getters and Setters
     def add_neighbour(self, area):
@@ -60,8 +67,11 @@ class Map:
         for i, area in enumerate(start.nbrs):
             print(f"{i+2}. {area}")
 
-        choice = player.get_input("Choose a location: ", [
-                                  str(i+1) for i in range(len(start.nbrs) + 1)])
+        choice = player.get_input("Choose a location: ", 
+                [
+                    str(i+1) for i in range(len(start.nbrs) + 1)
+                ]
+            )
         if choice.isdigit():
             index = int(choice) - 1
             if 0 <= index and index <= len(start.nbrs):

@@ -26,12 +26,10 @@ class Game:
         print("4. View Inventory")
         print("5. Quit")
 
-        choice = self.player.get_input(
-            "Choose an action: ", ["1", "2", "3", "4", "5"])
+        choice = self.player.get_input("Choose an action: ", ["1", "2", "3", "4", "5"])
 
         if choice == "1":
-            new_location = self.map.find_new_location(
-                self.player, self.player.location)
+            new_location = self.map.find_new_location(self.player, self.player.location)
             while new_location is None:
                 new_location = self.map.find_new_location(
                     self.player, self.player.location)
@@ -53,6 +51,7 @@ class Game:
             print("Thanks for playing!")
         else:
             return False
+        
 
 # Start of the Game
 name = input("What is your name: ")
@@ -63,12 +62,9 @@ name = input("What is your character's name: ")
 character = character_archive.MC_TEMPLATE
 character.name = name
 character.type = characters.Colour.random_type()
-character = characters.Character(name, max_hp=100, attack=3, defense=1, speed=1, type=characters.Colour.random_type(), sigils=[sigil_archive.POWER])
+character = characters.Character(name, max_hp=100, attack=3, defense=1, speed=1, type=characters.Colour.random_type())
 player.characters.append(character)
 
-print("Choose a team member to join you")
-ipt = input("1. Azelgram\n")
-player.characters.append(character_archive.AZELGRAM)
 
 # Game Loop
 print(f"{character.name} has entered the world!\n")
