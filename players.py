@@ -13,23 +13,6 @@ class Player:
         toReturn = f"{self.name}"
         return toReturn
     
-    def view_characters(self):
-        print("\n" + (" " * 35) + "Characters")
-        print("-" * 80)
-        for character in self.characters:
-            character.display_details()            
-        print("-" * 80, end="\n")
-
-    def view_inventory(self):
-        print("\n" + (" " * 35) + "Inventory")
-        print("-" * 80)
-        if self.inventory == []:
-            print("Inventory is empty.")
-        else:
-            for item in self.inventory:
-                print(item)
-        print("-" * 80, end="\n")
-
     def get_input(self, message, valid_choices):
         choice = input(message).strip()
         while choice not in valid_choices:
