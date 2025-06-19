@@ -35,7 +35,7 @@ class LootTable:
     def generate_loot(self):
         loot = []
         for _ in range(random.randint(self.amount_min, self.amount_max)):
-            item_base = random.choice(self.items, weights=[item[-1] for item in self.items])
+            item_base = random.choices(self.items, weights=[item[-1] for item in self.items])[0]
             item = Item(item_base[0], random.randint(item_base[1], item_base[2]))
             loot.append(item)
         return loot

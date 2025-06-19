@@ -179,7 +179,7 @@ class Character:
     def activate_active_effect(self, sigil, effect, battle):
         if sigil in self.sigils:
             if effect in sigil.active_effects:
-                effect.apply(self, battle)
+                effect.apply(self, battle, sigil=sigil)
 
     # Stat Changes
     def take_damage(self, damage, battle, source=None):

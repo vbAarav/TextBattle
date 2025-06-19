@@ -9,9 +9,9 @@ class ActiveEffect:
         self.description = description
         self.effect_function = effect_function  # Function to apply the active effect
 
-    def apply(self, character, battle):
+    def apply(self, character, battle, **kwargs):
         if self.effect_function:
-            self.effect_function(character, battle)
+            self.effect_function(character, battle, **kwargs)
 
     def __repr__(self):
         return f"ActiveEffect({self.name})"     

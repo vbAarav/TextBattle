@@ -6,11 +6,11 @@ import copy
 
 class Area:
     # Constructor
-    def __init__(self, name, description=None, nbrs=None):
+    def __init__(self, name, description=None, nbrs=None, enemies=None):
         self.name = name
         self.description = description
         self.nbrs = nbrs if nbrs is not None else []
-        self.enemies = {}
+        self.enemies = enemies if enemies is not None else {}
 
     # Events
     def explore_area(self, player):
@@ -35,9 +35,6 @@ class Area:
     # Getters and Setters
     def add_neighbour(self, area):
         self.nbrs.append(area)
-
-    def add_enemy(self, enemy, spawn_weight, loot_table):
-        self.enemies[enemy] = (spawn_weight, loot_table)
 
     # Magic Functions
     def __str__(self):
