@@ -42,11 +42,15 @@ class Player:
         self.location = location    
 
     def add_inventory_item(self, item):
-        self.inventory.append(item)
+        if item in self.inventory:
+            index = self.inventory.index(item)
+            self.inventory[index] += item
+        else:
+            self.inventory.append(item)        
 
     def add_inventory_loot(self, loot):
-        self.inventory.extend(loot)
-
+        for item in loot:
+            self.add_inventory_item(item)
 
 class Enemy(Player):
     def __init__(self, characters=None):

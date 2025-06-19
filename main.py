@@ -62,7 +62,7 @@ name = input("What is your character's name: ")
 character = character_archive.MC_TEMPLATE
 character.name = name
 character.type = characters.Colour.random_type()
-character = characters.Character(name, max_hp=100, attack=3, defense=1, speed=1, type=characters.Colour.random_type())
+character = characters.Character(name, max_hp=100, attack=11, defense=1, speed=1, type=characters.Colour.random_type(), sigils=[sigil_archive.GRIM_CORPSE])
 player.characters.append(character)
 
 

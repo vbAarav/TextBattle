@@ -144,15 +144,12 @@ class Battle:
     def choose_action(self, character):
         print(f"\n{character.name}'s turn!")
         print("1. Attack")
-        print("2. Sigil" if len(
-            [effect for sigils in character.sigils for effect in sigils.active_effects]) > 0 else "")
+        print("2. Sigil" if len([effect for sigils in character.sigils for effect in sigils.active_effects]) > 0 else "")
 
         # Choose Action
         choices = ["1"]
-        choices.append("2") if len(
-            [effect for sigils in character.sigils for effect in sigils.active_effects]) > 0 else None
-        choice = self.get_player(character).get_input(
-            "Choose an action: ", choices)
+        choices.append("2") if len([effect for sigils in character.sigils for effect in sigils.active_effects]) > 0 else None
+        choice = self.get_player(character).get_input("Choose an action: ", choices)
         valid_choice = False
 
         # Execute Chosen Action

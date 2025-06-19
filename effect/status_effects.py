@@ -19,6 +19,22 @@ def poison(character, battle, **kwargs):
     print(f"{character.name} is poisoned")
     character.take_damage(damage_amount, battle)
 
+# Burn
+BURN = StatusEffect(
+    "Burn",
+     description="Target takes 6% of Max HP as Damage at the start of turn",
+     type=StatusType.DEBUFF,
+     effects=
+     [
+        ComplexEffect(effect_base.trigger_on_start_of_turn, lambda character, battle, **kwargs: burn(character, battle, **kwargs))
+     ]
+)
+
+def burn(character, battle, **kwargs):
+    damage_amount = int(math.floor(character.max_hp.total * 0.06))
+    print(f"{character.name} is burned")
+    character.take_damage(damage_amount, battle)
+
 # Stun
 STUN = StatusEffect(
     "Stun",

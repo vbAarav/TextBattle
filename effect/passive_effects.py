@@ -209,7 +209,7 @@ def early_feast_remove(character, battle, **kwargs):
 # Demon Hunger
 DEMON_HUNGER = PassiveEffect(
     "Demon Hunger",
-     description="Before executing an attack, if the target is a 'Demon', Increase ATK by 10% and inflict burn on the target.",
+     description="Before executing an attack, if the target is a 'Demon', Increase ATK by 10% and inflict burn on the target for 3 turns.",
      effects=
      [
         ComplexEffect(effect_base.trigger_before_attack, lambda character, battle, **kwargs: demon_hunger, condition=lambda character, battle, **kwargs: kwargs.get("target").race and kwargs.get("target").race == "Demon")
@@ -219,23 +219,30 @@ def demon_hunger(character, battle, **kwargs):
     old_attack = character.attack.total
     character.attack.add_modifier(1.2, is_multiplicative=True)
     print(f"{character.name} ATK increased by 20%. {old_attack} -> {character.attack.total}")
+
+    # Burn
+    target = kwargs.get("target")
+    burn = copy.deepcopy(status_effects.BURN)
+    burn.max_duration = 3
+    target.add_status_effect(burn, battle)
                             
 
 # Death Will Arrive
 DEATH_WILL_ARRIVE = PassiveEffect(
     "Death Will Arrive",
-     description="After executing an attack, if the target is dead, increase ATK by 20% of the target's ATK",
+     description="After executing an attack, if the target is dead, Increases ATK by 20% of the target's ATK",
      effects=[
-         ComplexEffect(effect_base.trigger_after_attack, lambda character, battle, **kwargs: death_will_arrive(character, battle, **kwargs), condition=lambda character, battle, **kwargs: kwargs.get("target").is_alive() == False)
+        ComplexEffect(effect_base.trigger_after_attack, lambda character, battle, **kwargs: death_will_arrive(character, battle, **kwargs), condition=lambda character, battle, **kwargs: kwargs.get("target") and not kwargs.get("target").is_alive())
     ]
 )
 
 def death_will_arrive(character, battle, **kwargs):
-    for enemy in battle.get_character_enemies(character):
-        if not (enemy.is_alive()):
+        target = kwargs.get("target")
+        if not target.is_alive():
             old_attack = character.attack.total
-            character.attack.add_modifier(1.2, is_multiplicative=True)
-            print(f"{character.name} ATK increased by 20%. {old_attack} -> {character.attack.total}")
+            increase_amount = int(max(0, target.attack.total * 0.2))
+            character.attack.add_modifier(increase_amount)
+            print(f"{character.name} ATK increased by {increase_amount}. {old_attack} -> {character.attack.total}")
 
 
 
@@ -257,7 +264,7 @@ def glowing_aura(character, battle, **kwargs):
 # Embrace the Darkness
 EMBRACE_THE_DARKNESS = PassiveEffect(
     "Embrace the Darkness",
-    description="At the start of battle, Increase SPD by 5%. The first time HP is below 20%, Increase SPD by 20%.",
+    description="At the start of battle, Increases SPD by 5%. The first time HP is below 20%, Increase SPD by 20%.",
     effects=[
         ComplexEffect(effect_base.trigger_on_start_of_battle, lambda character, battle, **kwargs: embrace_the_darkness_one(character, battle, **kwargs)), 
         ComplexEffect(effect_base.trigger_on_stat_threshold(lambda character: character.max_hp.get_percentage() < 0.2), lambda character, battle, **kwargs: embrace_the_darkness_two(character, battle, **kwargs), max_stack=1)
