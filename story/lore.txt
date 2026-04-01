@@ -1,7 +1,33 @@
-re Glards.
+Systems and Lore
+
+The Ability Event:
+On a seemingly random day, people started to gain a strange ability. This continued for a month until all 8 billion people of Earth got an ability. These abilities were seemingly random, quirky, unique to everyone and most importantly vary in power. 
+
+The Worldwide Ability Shield:
+Due to the large amount of abilities that have been distributed. It became very easy for the world to become chaotic and potentially destroyed. The governments of major nations came together and developed the Worldwide Ability Shield. This organisation locates and develops people with abilities that can protect the world from other hostile abilities. These people are called Glards.
+They gather Glards and distribute them across the globe and obscure their identities to make them harder to target.
+
+Glards (Global Ability Response Agent)
+Due to the nature of abilities, they can cause a lot a of chaos. Glards are used to make sure societal order is still ensured and global destruction is prevented.
+A Glard is someone whose ability:
+- Neutralises
+- Redirects
+- Locates
+- Dampens
+- Force Rules
+on other potential dangerous abilities 
+
+Many Glards:
+	•	Are not famous
+	•	Are not combatants
+	•	May never use their ability directly
+
+Some don’t even know they’re Glards.
 
 Active References
-A while after the WAS was established. The people that were born would sometimes get an ability that would reference WAS. This suggests that whatever is distributing the abilities to people has context about the systems and history of our world. An ability that would reference something in the present time would be labelled as having an Active Reference. An example of an ability with an Active Reference would be bt Tiering System
+A while after the WAS was established. The people that were born would sometimes get an ability that would reference WAS. This suggests that whatever is distributing the abilities to people has context about the systems and history of our world. An ability that would reference something in the present time would be labelled as having an Active Reference. An example of an ability with an Active Reference would be “You may use any ability with a higher WASC Level then yours once every year”
+
+Tiering System
 It is well known that some abilities are stronger than others and some of them are by a large margin. The WAS has implemented a mandatory rule that forces all humans to disclose their ability to their governments. They will analyse the abilities, look at the data and will create a ranking system (WASC) to classify which abilities are safe and which need extra attention. There is also a confidence level to describe how confident an ability would be placed in a tier. A low confidence would usually mean they could be put in a tier above or below them.
 
 WASC - Level 1:
@@ -27,31 +53,33 @@ WAS Action: None, if user becomes dangerous, monitor them.
 
 WASC - Level 3: 
 These are abilities that are quite powerful and are able to effect a large amount of people. They may even cause fatality quickly or unexpectedly. 
-There are a large amount of ways an abilityeven know theybSystems and Lore
+There are a large amount of ways an ability can be classed as Level 3 and they range from manipulating groups, causing societal instability, causing loopholes, altering behaviours, making knowledge dangerous, giving and creating abilities, surviving post-death, breaking information integrity and common structural incompatibility. A person with an ability of this classification would be a highly dangerous existence and needs to be monitored.
+Examples: 
+- A person classified as a Gara by WAS must have an offspring with you to be alive. (High Confidence) (Note: The original name for Glard was Gara, at that time this ability would be Level 3. It is now Level 1).
+- Anyone who jumps at the same time as you gains the ability “You can jump double you height, but you can only jump with one leg” (Medium Confidence)
+- Anyone other than you who reads your ability loses their ability, unless they are deaf. (High Confidence)
 
-The Ability Event:
-On a seemingly random day, people started to gain a strange ability. This continued for a month until all 8 billion people of Earth got an ability. These abilities were seemingly random, quirky, unique to everyone and most importantly vary in power. 
+WAS Action: Monitor them, Terminate if user becomes out of control
 
-The Worldwide Ability Shield:
-Due to the large amount of abilities that have been distributed. It became very easy for the world to become chaotic and potentially destroyed. The governments of major nations came together and developed the Worldwide Ability Shield. This organisation locates and develops people with abilities that can protect the world from other hostile abilities. These people are called Glards.
-They gather Glards and distribute them across the globe and obscure their identities to make them harder to target.
+(Note: Knowledge gained via an ability and using it to persuade a group is not good enough to be a Level 3 ability. There needs to be some effect that changes their mind, like mind control)
 
-Glards (Global Ability Response Agent)
-Due to the nature of abilities, they can cause a lot a of chaos. Glards are used to make sure societal order is still ensured and global destruction is prevented.
-A Glard is someone whose ability:
-- Neutralises
-- Redirects
-- Locates
-- Dampens
-- Force Rules
-on other potential dangerous abilities 
+WASC - Level 4:
+These are abilities that can cause global destruction, change the fabric of reality and space-time, manipulate fundamental concepts or has an overly powerful Level 4 ability. They are usually disastrous with minimal restrictions. A person with an ability of this classification is the primary reason the WAS exist as they can appear anywhere in the world at anytime. Glards of this level are required for our planet to survive.
+Examples:
+- You can turn any hole that contains no light into a black hole (High Confidence)
+- You gain all of the abilities of anyone who reads your ability (High Confidence)
 
-Many Glards:
-	b
-"	Are not famous
-	b
-"	Are not combatants
-	b
-"	May never use their ability directly
+WAS Action: Use every measure to ensure their ability does not activate or rarely. In most cases terminate when out of control.
 
-Some donb
+WASC - Level 5:
+These are abilities that would cause a global scale effect so powerful that it ignores the Glards and WAS protections. A person with an ability of this classification must be terminated immediately. As declared by international law, murder of a Level 5 individual is legal and morally right. There has currently been no recorded case of a Level 5 ability.
+
+An example will not be provided for the safety of humanity
+
+WAS Action: Terminate
+
+WASC - Special:
+These are abilities that are very different to tier, cannot be tiered for special reasons or have consequences when tiered. A person with an ability of this classification is hard to gauge as they could be as dangerous as a Level 1 or 5
+Examples: 
+- You can choose to increment your ability’s WASC Level with corresponding effects, however a random person’s ability level will also increases. (High Confidence)
+
